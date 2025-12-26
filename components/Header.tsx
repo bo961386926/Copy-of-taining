@@ -48,6 +48,7 @@ const Header: React.FC = () => {
             {formatDate(currentTime)}
           </div>
         </div>
+        
         <div className="flex items-center bg-cyan-400/10 border border-cyan-400/30 px-3 py-1 rounded-full group hover:bg-cyan-400/20 transition-all">
            <Cloud size={14} className="text-cyan-400 mr-2 animate-bounce" />
            <span className="font-orbitron text-xs font-black text-white">9°C</span>

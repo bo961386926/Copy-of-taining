@@ -2,10 +2,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   X, Calendar, CheckSquare, Square, ChevronDown,
-  Video, Camera, ChevronLeft, ChevronRight, Clock, Maximize
+  Video, Camera, ChevronLeft, ChevronRight, Clock, Maximize, Activity
 } from 'lucide-react';
 import { 
-  ComposedChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
+  ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 
 interface DetailModalProps {
@@ -18,21 +18,22 @@ interface DetailModalProps {
 }
 
 // --- Mock Data: Chart ---
+// Updated to reflect Gutter Level, Negative Pressure, and Drainage Flow over 24h
 const chartData = [
-  { name: '1月', rain: 220, flow: 280, pressure: 150, level: 100 },
-  { name: '2月', rain: 160, flow: 250, pressure: 160, level: 110 },
-  { name: '3月', rain: 180, flow: 220, pressure: 140, level: 105 },
-  { name: '4月', rain: 270, flow: 310, pressure: 180, level: 130 },
-  { name: '5月', rain: 210, flow: 280, pressure: 170, level: 125 },
-  { name: '6月', rain: 440, flow: 154, pressure: 160, level: 140 },
-  { name: '7月', rain: 800, flow: 465, pressure: 190, level: 180 },
+  { time: '00:00', level: 0.5, pressure: 50, flow: 120 },
+  { time: '03:00', level: 0.8, pressure: 80, flow: 180 },
+  { time: '06:00', level: 1.2, pressure: 150, flow: 350 },
+  { time: '09:00', level: 3.5, pressure: 380, flow: 950 },
+  { time: '12:00', level: 4.2, pressure: 460, flow: 1340 },
+  { time: '15:00', level: 3.8, pressure: 410, flow: 1120 },
+  { time: '18:00', level: 2.5, pressure: 250, flow: 680 },
+  { time: '21:00', level: 1.5, pressure: 120, flow: 320 },
 ];
 
 const metricsConfig = [
-  { key: 'rain', label: '雨量分析', color: '#4ade80', unit: 'mm' },
-  { key: 'flow', label: '流量分析', color: '#3b82f6', unit: 'L/s' },
-  { key: 'pressure', label: '压力分析', color: '#a855f7', unit: 'kPa' },
-  { key: 'level', label: '液位分析', color: '#f59e0b', unit: 'mm' },
+  { key: 'level', label: '天沟液位', color: '#22d3ee', unit: 'cm', yAxisId: 'right' },
+  { key: 'pressure', label: '运行负压', color: '#fbbf24', unit: 'mbar', yAxisId: 'left' },
+  { key: 'flow', label: '排水流量', color: '#3b82f6', unit: 'm³/h', yAxisId: 'left' },
 ];
 
 // --- Mock Data: Video ---
@@ -42,8 +43,6 @@ const mockVideos = [
   { id: 3, name: '屋面排水-东区', status: 'REC' },
   { id: 4, name: '屋面排水-西区', status: 'LIVE' },
 ];
-// Uncomment below to test single video view
-// const mockVideos = [{ id: 1, name: '1# 运用库-全景', status: 'LIVE' }];
 
 // --- Mock Data: Snapshots ---
 const generateSnapshots = () => {
@@ -66,8 +65,8 @@ const SNAPSHOTS_PER_PAGE = 8; // 4 cols * 2 rows
 
 const DetailModal: React.FC<DetailModalProps> = ({ isOpen, onClose, markerData }) => {
   const [activeTab, setActiveTab] = useState('realtime');
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(['rain', 'flow']);
-  const [timeRange, setTimeRange] = useState('今年');
+  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(['level', 'pressure', 'flow']);
+  const [timeRange, setTimeRange] = useState('近24小时');
   const [snapshotPage, setSnapshotPage] = useState(1);
 
   // Time Selection State
@@ -111,13 +110,18 @@ const DetailModal: React.FC<DetailModalProps> = ({ isOpen, onClose, markerData }
 
   const renderRealtimeChart = () => (
     <>
-      <div className="flex-1 min-h-0 bg-white/[0.02] border border-white/5 rounded-sm p-4 relative">
+      <div className="flex-1 min-h-0 bg-[#0a1a3a]/30 border border-cyan-400/20 rounded-sm p-4 relative shadow-[inset_0_0_20px_rgba(0,229,255,0.05)]">
+        {/* Grid Background Effect */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none" 
+             style={{ backgroundImage: 'linear-gradient(#00e5ff 0.5px, transparent 0.5px), linear-gradient(90deg, #00e5ff 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }}>
+        </div>
+
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <ComposedChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: 0 }}>
             <defs>
               {metricsConfig.map(m => (
-                <linearGradient key={m.key} id={`color-${m.key}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={m.color} stopOpacity={0.6}/>
+                <linearGradient key={m.key} id={`gradient-${m.key}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={m.color} stopOpacity={0.4}/>
                   <stop offset="95%" stopColor={m.color} stopOpacity={0}/>
                 </linearGradient>
               ))}
@@ -125,61 +129,71 @@ const DetailModal: React.FC<DetailModalProps> = ({ isOpen, onClose, markerData }
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff" opacity={0.1} />
             
             <XAxis 
-              dataKey="name" 
+              dataKey="time" 
               axisLine={false} 
               tickLine={false} 
-              tick={{ fill: '#94a3b8', fontSize: 12 }} 
+              tick={{ fill: '#94a3b8', fontSize: 10, fontFamily: 'Orbitron' }} 
               dy={10}
             />
 
+            {/* Left Axis for Flow & Pressure */}
             <YAxis 
-              yAxisId="main"
+              yAxisId="left"
+              orientation="left"
               axisLine={false} 
               tickLine={false} 
-              tick={{ fill: '#94a3b8', fontSize: 12 }} 
-              domain={[0, (dataMax: number) => (dataMax * 2)]}
+              tick={{ fill: '#94a3b8', fontSize: 10, fontFamily: 'Orbitron' }} 
+              label={{ value: '流量(m³/h) / 负压(mbar)', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 10, opacity: 0.6 }}
             />
 
+            {/* Right Axis for Level */}
             <YAxis 
-              yAxisId="rain"
+              yAxisId="right"
               orientation="right"
-              reversed={true}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: '#4ade80', fontSize: 12, opacity: 0.8 }}
-              hide={!selectedMetrics.includes('rain')}
-              domain={[0, (dataMax: number) => (dataMax * 3)]}
+              tick={{ fill: '#22d3ee', fontSize: 10, fontFamily: 'Orbitron' }}
+              label={{ value: '液位(cm)', angle: 90, position: 'insideRight', fill: '#22d3ee', fontSize: 10, opacity: 0.8 }}
             />
 
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: 'rgba(2, 13, 36, 0.9)', 
+                backgroundColor: 'rgba(2, 13, 36, 0.95)', 
                 borderColor: '#00e5ff', 
-                borderRadius: '4px',
-                boxShadow: '0 0 20px rgba(0, 229, 255, 0.2)'
+                borderRadius: '2px',
+                borderWidth: '1px',
+                boxShadow: '0 0 15px rgba(0, 229, 255, 0.2)'
               }}
-              itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
-              labelStyle={{ color: '#fff', marginBottom: '8px', fontWeight: 'bold' }}
+              itemStyle={{ fontSize: '12px', fontWeight: 'bold', fontFamily: 'Orbitron' }}
+              labelStyle={{ color: '#00e5ff', marginBottom: '8px', fontWeight: 'bold', fontFamily: 'Orbitron' }}
               cursor={{ stroke: '#fff', strokeDasharray: '4 4', strokeOpacity: 0.3 }}
               formatter={(value: number, name: string) => {
-                const metric = metricsConfig.find(m => m.label.replace('分析', '') === name);
+                const metric = metricsConfig.find(m => m.label === name);
                 return [`${value} ${metric?.unit || ''}`, name];
               }}
             />
             
+            <Legend 
+               wrapperStyle={{ paddingTop: '10px' }} 
+               iconType="rect" 
+               iconSize={10}
+               formatter={(value) => <span className="text-white/80 text-xs font-bold ml-1">{value}</span>}
+            />
+
             {metricsConfig.map(m => (
               selectedMetrics.includes(m.key) && (
                 <Area 
                   key={m.key}
-                  yAxisId={m.key === 'rain' ? 'rain' : 'main'}
+                  yAxisId={m.yAxisId}
                   type="monotone" 
                   dataKey={m.key} 
-                  name={m.label.replace('分析', '')}
+                  name={m.label}
                   stroke={m.color} 
-                  fillOpacity={0.5}
-                  fill={`url(#color-${m.key})`} 
+                  fillOpacity={1}
+                  fill={`url(#gradient-${m.key})`} 
                   strokeWidth={2}
-                  activeDot={{ r: 6, strokeWidth: 0, fill: '#fff' }}
+                  activeDot={{ r: 4, stroke: '#fff', strokeWidth: 1 }}
+                  animationDuration={1500}
                 />
               )
             ))}
@@ -194,8 +208,11 @@ const DetailModal: React.FC<DetailModalProps> = ({ isOpen, onClose, markerData }
             onClick={() => toggleMetric(m.key)}
             className="flex items-center space-x-2 group"
           >
-            <div className={`transition-colors ${selectedMetrics.includes(m.key) ? 'text-cyan-400' : 'text-white/30 group-hover:text-white/50'}`}>
-              {selectedMetrics.includes(m.key) ? <CheckSquare size={16} /> : <Square size={16} />}
+            <div className={`transition-all duration-300 ${selectedMetrics.includes(m.key) ? 'scale-110' : 'opacity-50 grayscale'}`}>
+              {selectedMetrics.includes(m.key) ? 
+                <CheckSquare size={16} color={m.color} className="drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]" /> : 
+                <Square size={16} className="text-white/30" />
+              }
             </div>
             <span className={`text-xs font-bold transition-colors ${selectedMetrics.includes(m.key) ? 'text-white' : 'text-white/50 group-hover:text-white/70'}`}>
               {m.label}

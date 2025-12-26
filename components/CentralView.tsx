@@ -1,8 +1,13 @@
 
 import React, { useState } from 'react';
 import DetailModal from './DetailModal';
+import { LogIn } from 'lucide-react';
 
-const CentralView: React.FC = () => {
+interface CentralViewProps {
+  onEnterSystem?: () => void;
+}
+
+const CentralView: React.FC<CentralViewProps> = ({ onEnterSystem }) => {
   const [activeHoverMarker, setActiveHoverMarker] = useState<number | null>(null);
   const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
 
@@ -85,12 +90,11 @@ const CentralView: React.FC = () => {
         </div>
       ))}
 
-      {/* Bottom Status Bar */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex space-x-8 px-8 py-2 bg-[#020d24]/80 backdrop-blur-sm border border-cyan-400/20 rounded-sm">
+      {/* Bottom Status Bar - Updated Legend to Level Monitoring and Rain Gauge */}
+      <div className="absolute bottom-2 left-6 z-20 flex space-x-8 px-8 py-2 bg-[#020d24]/80 backdrop-blur-sm border border-cyan-400/20 rounded-sm">
         {[
-          { label: '屋面排水系统', val: 'SYS_ON', color: 'text-cyan-400' },
-          { label: '负压监测节点', val: 'SENS_ACTIVE', color: 'text-blue-400' },
-          { label: '溢流预警中心', val: 'MON_READY', color: 'text-orange-400' }
+          { label: '液位监测', val: 'LEVEL_MON', color: 'text-cyan-400' },
+          { label: '雨量筒', val: 'RAIN_GAUGE', color: 'text-blue-400' }
         ].map((item, i) => (
           <div key={i} className="flex items-center space-x-2.5 group cursor-default">
             <div className={`w-1.5 h-1.5 rounded-full bg-current ${item.color} shadow-[0_0_4px_currentColor] animate-pulse`}></div>
@@ -100,6 +104,18 @@ const CentralView: React.FC = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Enter System Button - Positioned bottom right, to the left of Project Overview sidebar */}
+      <div className="absolute bottom-2 right-6 z-40">
+        <button 
+          onClick={onEnterSystem}
+          className="flex items-center space-x-2 bg-gradient-to-r from-blue-600/80 to-cyan-600/80 hover:from-blue-500 hover:to-cyan-500 border border-cyan-400/50 hover:border-cyan-300 text-white px-5 py-2 rounded-sm transition-all duration-300 shadow-[0_0_15px_rgba(0,229,255,0.3)] hover:shadow-[0_0_25px_rgba(0,229,255,0.5)] group relative overflow-hidden backdrop-blur-md"
+        >
+          <div className="absolute inset-0 bg-cyan-400/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
+          <LogIn size={16} className="text-cyan-200 group-hover:text-white transition-colors relative z-10" />
+          <span className="text-xs font-bold tracking-widest relative z-10">进入监测系统</span>
+        </button>
       </div>
 
       {/* Detail Modal */}
