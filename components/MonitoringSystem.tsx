@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Cloud, Moon, Sun, CloudRain, Wind, ChevronLeft, ChevronRight, ShieldCheck, Droplets, Zap, CloudLightning, Camera, Maximize2, Maximize, Minimize, Play, Pause, X, Video, Volume2, VolumeX, Move, Mic, MicOff, ZoomIn } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Area, Legend } from 'recharts';
 
 interface MonitoringSystemProps {
   onBack: () => void;
@@ -22,26 +22,16 @@ const locationList = [
   "TN-P011"
 ];
 
-const weatherData = [
-  { time: '12:00', icon: <Sun size={14} className="text-orange-400"/>, temp: '1°C' },
-  { time: '15:00', icon: <Sun size={14} className="text-orange-400"/>, temp: '3°C' },
-  { time: '18:00', icon: <Moon size={14} className="text-cyan-400"/>, temp: '0°C' },
-  { time: '21:00', icon: <Moon size={14} className="text-cyan-400"/>, temp: '-3°C' },
-  { time: '00:00', icon: <Moon size={14} className="text-cyan-400"/>, temp: '-5°C' },
-  { time: '03:00', icon: <Moon size={14} className="text-cyan-400"/>, temp: '-7°C' },
-  { time: '06:00', icon: <Moon size={14} className="text-cyan-400"/>, temp: '-8°C' },
-  { time: '09:00', icon: <Sun size={14} className="text-orange-400"/>, temp: '-6°C' },
-];
-
-const drainageData = [
-  { time: '12:00', flow: 0.1 },
-  { time: '15:00', flow: 0.2 },
-  { time: '18:00', flow: 0.1 },
-  { time: '21:00', flow: 0.0 },
-  { time: '00:00', flow: 0.0 },
-  { time: '03:00', flow: 0.0 },
-  { time: '06:00', flow: 0.0 },
-  { time: '09:00', flow: 0.05 },
+// Comprehensive 24h Trend Data for Level, Pressure, Flow
+const trendData = [
+  { time: '12:00', level: 0.5, pressure: 50, flow: 120 },
+  { time: '15:00', level: 0.8, pressure: 80, flow: 180 },
+  { time: '18:00', level: 1.2, pressure: 150, flow: 350 },
+  { time: '21:00', level: 3.5, pressure: 380, flow: 950 },
+  { time: '00:00', level: 4.2, pressure: 460, flow: 1340 },
+  { time: '03:00', level: 3.8, pressure: 410, flow: 1120 },
+  { time: '06:00', level: 2.5, pressure: 250, flow: 680 },
+  { time: '09:00', level: 1.5, pressure: 120, flow: 320 },
 ];
 
 // Mock Photos Data for the Carousel
@@ -668,53 +658,49 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
 
       {/* RIGHT SIDEBAR - Analysis */}
       <div className="w-[300px] flex flex-col space-y-2">
-        {/* Weather */}
-        <div className="bg-blue-900/10 border border-blue-400/20 rounded-sm p-2 flex flex-col h-[150px]">
-           <div className="text-xs font-bold text-white italic border-l-2 border-cyan-400 pl-2 mb-2">近24小时天气预报</div>
-           <div className="flex-1 flex flex-col justify-center">
-              <div className="flex justify-between px-1 mb-2">
-                 {weatherData.map((w, i) => (
-                   <div key={i} className="flex flex-col items-center">
-                      <span className="text-[8px] text-white/50 mb-1">{w.time}</span>
-                      <div className="mb-1">{w.icon}</div>
-                      <span className="text-[9px] text-white font-bold">{w.temp}</span>
-                      {/* Connection Line Visual */}
-                      <div className="w-full h-[1px] bg-white/10 mt-1 relative">
-                         <div className="absolute left-1/2 -translate-x-1/2 -top-[2px] w-[3px] h-[3px] bg-white/30 rounded-full"></div>
-                      </div>
-                   </div>
-                 ))}
-              </div>
-              <div className="flex justify-between px-1 text-[8px] text-cyan-300 font-mono">
-                 <span>1°C</span>
-                 <span>3°C</span>
-                 <span>0°C</span>
-                 <span>-3°C</span>
-                 <span>-5°C</span>
-                 <span>-7°C</span>
-                 <span>-8°C</span>
-                 <span>-6°C</span>
-              </div>
-           </div>
-        </div>
-
-        {/* Chart */}
-        <div className="bg-blue-900/10 border border-blue-400/20 rounded-sm p-2 flex flex-col h-[200px]">
-           <div className="text-xs font-bold text-white italic border-l-2 border-cyan-400 pl-2 mb-2">近24小时排水趋势</div>
+        {/* REPLACED WEATHER WITH EXPANDED MONITORING CHART */}
+        <div className="bg-blue-900/10 border border-blue-400/20 rounded-sm p-2 flex flex-col h-[350px]">
+           <div className="text-xs font-bold text-white italic border-l-2 border-cyan-400 pl-2 mb-2">监测数据趋势 (24h)</div>
            <div className="flex-1 relative">
              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={drainageData} margin={{top: 5, right: 5, bottom: 5, left: -25}}>
+                <ComposedChart data={trendData} margin={{top: 5, right: 0, bottom: 5, left: -25}}>
+                   <defs>
+                     <linearGradient id="colorFlow" x1="0" y1="0" x2="0" y2="1">
+                       <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                       <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                     </linearGradient>
+                     <linearGradient id="colorPressure" x1="0" y1="0" x2="0" y2="1">
+                       <stop offset="5%" stopColor="#fbbf24" stopOpacity={0.3}/>
+                       <stop offset="95%" stopColor="#fbbf24" stopOpacity={0}/>
+                     </linearGradient>
+                   </defs>
                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff" opacity={0.1} />
                    <XAxis dataKey="time" fontSize={8} tick={{fill: '#94a3b8'}} axisLine={false} tickLine={false} />
-                   <YAxis fontSize={8} tick={{fill: '#94a3b8'}} axisLine={false} tickLine={false} />
+                   
+                   {/* Left Axis: Flow & Pressure (mbar, m3/h - sharing scale roughly for viz, or just primary) */}
+                   <YAxis yAxisId="left" fontSize={8} tick={{fill: '#fbbf24'}} axisLine={false} tickLine={false} label={{ value: 'mbar/m³h', angle: -90, position: 'insideLeft', fill: '#fbbf24', fontSize: 8, opacity: 0.5, dy: 30 }} />
+                   
+                   {/* Right Axis: Level (cm) */}
+                   <YAxis yAxisId="right" orientation="right" fontSize={8} tick={{fill: '#22d3ee'}} axisLine={false} tickLine={false} label={{ value: 'cm', angle: 90, position: 'insideRight', fill: '#22d3ee', fontSize: 8, opacity: 0.5, dy: -10 }} />
+
                    <Tooltip 
                      contentStyle={{backgroundColor: '#020d24', borderColor: '#3b82f6', fontSize: '10px'}} 
                      itemStyle={{color: '#fff'}}
+                     labelStyle={{color: '#fff', marginBottom: '5px', fontWeight: 'bold'}}
+                     formatter={(value: any, name: any) => {
+                        if (name === '运行负压') return [`${value} mbar`, name];
+                        if (name === '排水流量') return [`${value} m³/h`, name];
+                        if (name === '天沟液位') return [`${value} cm`, name];
+                        return [value, name];
+                     }}
                    />
-                   <Line type="monotone" dataKey="flow" stroke="#3b82f6" dot={false} strokeWidth={2} />
-                </LineChart>
+                   <Legend iconSize={8} wrapperStyle={{fontSize: '10px', paddingTop: '5px'}} />
+                   
+                   <Area yAxisId="left" type="monotone" dataKey="pressure" name="运行负压" stroke="#fbbf24" fill="url(#colorPressure)" strokeWidth={1.5} />
+                   <Line yAxisId="left" type="monotone" dataKey="flow" name="排水流量" stroke="#3b82f6" dot={false} strokeWidth={1.5} />
+                   <Line yAxisId="right" type="monotone" dataKey="level" name="天沟液位" stroke="#22d3ee" dot={false} strokeWidth={1.5} strokeDasharray="3 3" />
+                </ComposedChart>
              </ResponsiveContainer>
-             <div className="absolute top-0 right-0 text-[8px] text-white/40">流速(m/s) vs 降雨量(mm)</div>
            </div>
         </div>
 
