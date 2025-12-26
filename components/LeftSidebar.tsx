@@ -3,10 +3,9 @@ import React from 'react';
 import DashboardCard from './DashboardCard';
 import { 
   Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  ComposedChart, Cell, BarChart, LineChart
+  ComposedChart, Cell, BarChart, LineChart, Legend
 } from 'recharts';
 import { ShieldCheck, Droplets, Zap } from 'lucide-react';
-import { Button } from 'lucide-react';
 
 const healthData = [
   { name: '1月', value: 95 },
@@ -18,14 +17,21 @@ const healthData = [
   { name: '7月', value: 82 },
 ];
 
-const yearlyDrainageData = [
-  { times:'2025-01.',name: '场次1', flow: 120, velocity: 3.2, rain: 8 },
-  { times:'2025-02.',name: '场次2', flow: 450, velocity: 6.8, rain: 25 },
-  { times:'2025-03.',name: '场次3', flow: 310, velocity: 4.5, rain: 15 },
-  { times:'2025-04.',name: '场次4', flow: 890, velocity: 9.2, rain: 48 },
-  { times:'2025-05.',name: '场次5', flow: 560, velocity: 7.1, rain: 30 },
-  { times:'2025-06.',name: '场次6', flow: 980, velocity: 10.0, rain: 52 },
-  { times:'2025-07.',name: '场次7', flow: 220, velocity: 3.8, rain: 12 },
+// Updated data with more entries to demonstrate scrolling capability for large datasets
+const drainageAnalysisData = [
+  { date: '5月6日', rain: 10, flow: 20, velocity: 1.0 },
+  { date: '5月7日', rain: 30, flow: 50, velocity: 1.5 },
+  { date: '5月8日', rain: 50, flow: 60, velocity: 2.5 },
+  { date: '5月9日', rain: 60, flow: 70, velocity: 3.8 },
+  { date: '5月10日', rain: 80, flow: 100, velocity: 4.2 },
+  { date: '5月11日', rain: 60, flow: 80, velocity: 3.5 },
+  { date: '5月12日', rain: 40, flow: 60, velocity: 2.2 },
+  { date: '5月13日', rain: 20, flow: 50, velocity: 1.5 },
+  { date: '5月14日', rain: 10, flow: 20, velocity: 0.8 },
+  { date: '5月15日', rain: 5, flow: 15, velocity: 0.5 },
+  { date: '5月16日', rain: 2, flow: 10, velocity: 0.3 },
+  { date: '5月17日', rain: 0, flow: 5, velocity: 0.1 },
+  { date: '5月18日', rain: 0, flow: 5, velocity: 0.1 },
 ];
 
 const warningTrendYearly = [
@@ -78,13 +84,18 @@ const LeftSidebar: React.FC = () => {
     },
   ];
 
+  // Dynamic width calculation: ensure each data point gets at least 45px
+  // This enables horizontal scrolling when data points increase (e.g. > 8 items)
+  const chartMinWidth = Math.max(drainageAnalysisData.length * 45, 100);
+
   return (
     <div className="w-[380px] h-full flex flex-col p-2 space-y-2 z-20">
       {/* 综合运行数据 - 强化安全运行天数概念 */}
       <DashboardCard title="综合运行数据" className="h-[145px]">
-        <div className="grid grid-cols-3 gap-3 h-full items-center">
+        {/* Updated: removed items-center to allow full height stretching */}
+        <div className="grid grid-cols-3 gap-3 h-full">
           {metrics.map((item, i) => (
-            <div key={i} className={`relative flex flex-col items-center justify-center h-[100px] rounded-lg overflow-hidden border border-white/5 bg-gradient-to-br ${item.color} to-transparent group transition-all duration-500 hover:border-white/20`}>
+            <div key={i} className={`relative flex flex-col items-center justify-center h-full rounded-lg overflow-hidden border border-white/5 bg-gradient-to-br ${item.color} to-transparent group transition-all duration-500 hover:border-white/20`}>
               
               {/* 背景旋转环 - 对应主题色 */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 opacity-15 pointer-events-none group-hover:opacity-30 transition-opacity">
@@ -172,51 +183,83 @@ const LeftSidebar: React.FC = () => {
 
       <DashboardCard title="系统排水分析" className="h-[320px]">
         <div className="flex flex-col h-full">
-          <div className="flex justify-between items-center bg-blue-600/10 border border-blue-400/20 px-3 py-1.5 mb-2 rounded-sm relative overflow-hidden group">
+          <div className="flex justify-between items-center bg-blue-600/10 border border-blue-400/20 px-3 py-1.5 mb-2 rounded-sm relative overflow-hidden group shrink-0">
             <div className="flex flex-col items-center">
-              <span className="text-[8px] text-cyan-300 font-bold uppercase tracking-widest">当日降雨</span>
-              <span className="text-sm font-orbitron font-black text-white">52.0<span className="text-[8px] ml-0.5">mm</span></span>
+              <span className="text-[8px] text-[#bbf7d0] font-bold uppercase tracking-widest">最大降雨</span>
+              <span className="text-sm font-orbitron font-black text-white">80<span className="text-[8px] ml-0.5">mm</span></span>
             </div>
             <div className="w-[1px] h-4 bg-white/10"></div>
             <div className="flex flex-col items-center">
-              <span className="text-[8px] text-yellow-300 font-bold uppercase tracking-widest">最高流速</span>
-              <span className="text-sm font-orbitron font-black text-white">10<span className="text-[8px] ml-0.5">m/s</span></span>
+              <span className="text-[8px] text-blue-300 font-bold uppercase tracking-widest">最高流速</span>
+              <span className="text-sm font-orbitron font-black text-white">4.2<span className="text-[8px] ml-0.5">m/s</span></span>
             </div>
             <div className="w-[1px] h-4 bg-white/10"></div>
             <div className="flex flex-col items-center">
-              <span className="text-[8px] text-blue-200 font-bold uppercase tracking-widest">最高流量</span>
-              <span className="text-sm font-orbitron font-black text-white">980<span className="text-[8px] ml-0.5">m³/h</span></span>
+              <span className="text-[8px] text-red-300 font-bold uppercase tracking-widest">最高流量</span>
+              <span className="text-sm font-orbitron font-black text-white">100<span className="text-[8px] ml-0.5">L/s</span></span>
             </div>
           </div>
-          <div className="flex-1 min-h-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={yearlyDrainageData} margin={{ top: 5, right: -5, left: -30, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="2 2" vertical={false} stroke="#7dd913ff" opacity={0.05} />
-    
-                <XAxis dataKey="name" fontSize={8} tick={{ fill: '#ffffff', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="left" orientation="left" fontSize={8} tick={{ fill: '#fbbf24', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
-                <YAxis yAxisId="right" orientation="right" fontSize={8} tick={{ fill: '#60a5fa', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
-                <Tooltip 
-                  {...commonTooltipProps} 
-                  formatter={(value, name) => {
-                    if (name === 'rain') return [`${value} mm`, '降雨量1'];
-                    if (name === 'velocity') return [`${value} m/s`, '流速'];
-                    if (name === 'flow') return [`${value} m³/h`, '流量'];
-                
-                    return [value, name];
-                  }}
-                />
-                <Bar dataKey="rain" name="rain" fill="#00e5ff" fillOpacity={0.6} barSize={10} radius={[1, 1, 0, 0]} />
-                <Line yAxisId="left" name="velocity" type="monotone" dataKey="velocity" stroke="#fbbf24" strokeWidth={1.5} dot={{ r: 2, fill: '#fbbf24' }} />
-                <Line yAxisId="right" name="flow" type="monotone" dataKey="flow" stroke="#3b82f6" strokeWidth={1.5} strokeDasharray="3 3" dot={{ r: 2, fill: '#3b82f6' }} />
-              </ComposedChart>
-            </ResponsiveContainer>
+          
+          <div className="flex-1 min-h-0 relative">
+            <div className="absolute inset-0 overflow-x-auto custom-scrollbar">
+              <div style={{ width: chartMinWidth > 0 ? `${chartMinWidth}px` : '100%', minWidth: '100%', height: '100%' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={drainageAnalysisData} margin={{ top: 5, right: -5, left: -30, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="2 2" vertical={false} stroke="#ffffff" opacity={0.05} />
+        
+                    <XAxis dataKey="date" fontSize={8} tick={{ fill: '#ffffff', fontWeight: 'bold' }} axisLine={false} tickLine={false} interval={0} />
+                    
+                    {/* Left Y-Axis for Flow and Velocity */}
+                    <YAxis 
+                      yAxisId="left" 
+                      orientation="left" 
+                      fontSize={8} 
+                      tick={{ fill: '#ffffff', fontWeight: 'bold' }} 
+                      axisLine={false} 
+                      tickLine={false}
+                      label={{ value: '流量(L/s) / 流速(m/s)', angle: -90, position: 'insideLeft', fontSize: 8, fill: '#ffffff', opacity: 0.7, dy: 40 }}
+                    />
+                    
+                    {/* Right Y-Axis for Rain (Inverted) */}
+                    <YAxis 
+                      yAxisId="right" 
+                      orientation="right" 
+                      fontSize={8} 
+                      tick={{ fill: '#bbf7d0', fontWeight: 'bold' }} 
+                      axisLine={false} 
+                      tickLine={false}
+                      reversed={true}
+                      label={{ value: '降雨量(mm)', angle: 90, position: 'insideRight', fontSize: 8, fill: '#bbf7d0', opacity: 0.7 }}
+                    />
+
+                    <Tooltip 
+                      {...commonTooltipProps} 
+                      labelStyle={{ color: '#fff', fontWeight: 'bold', marginBottom: '5px' }}
+                      formatter={(value, name) => {
+                        if (name === '降雨量') return [`${value} mm`, '降雨量'];
+                        if (name === '流速') return [`${value} m/s`, '流速'];
+                        if (name === '流量') return [`${value} L/s`, '流量'];
+                        return [value, name];
+                      }}
+                    />
+                    
+                    <Legend iconSize={8} wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }} />
+
+                    {/* Rain Bars - Hanging from top (using inverted axis) - Light Green user liked */}
+                    <Bar yAxisId="right" name="降雨量" dataKey="rain" fill="#bbf7d0" barSize={15} radius={[0, 0, 2, 2]} />
+                    
+                    {/* Flow Line - Red */}
+                    <Line yAxisId="left" name="流量" type="monotone" dataKey="flow" stroke="#ef4444" strokeWidth={2} dot={{ r: 0 }} activeDot={{ r: 4 }} />
+                    
+                    {/* Velocity Line - Blue */}
+                    <Line yAxisId="left" name="流速" type="monotone" dataKey="velocity" stroke="#3b82f6" strokeWidth={2} dot={{ r: 0 }} activeDot={{ r: 4 }} />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
         </div>
       </DashboardCard>
-
-      
-      
     </div>
   );
 };

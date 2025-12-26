@@ -1,8 +1,10 @@
 
 import React, { useState } from 'react';
+import DetailModal from './DetailModal';
 
 const CentralView: React.FC = () => {
-  const [activeMarker, setActiveMarker] = useState<number | null>(null);
+  const [activeHoverMarker, setActiveHoverMarker] = useState<number | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
 
   const markers = [
     { top: '62%', left: '46%', label: '1# 运用库', val: '0.2m/s', status: 'online' },
@@ -64,14 +66,19 @@ const CentralView: React.FC = () => {
       {/* Interactive Markers */}
       {markers.map((marker, i) => (
         <div key={i} className="absolute z-30" style={{ top: marker.top, left: marker.left }}>
-          <div className="relative flex flex-col items-center group cursor-pointer" onMouseEnter={() => setActiveMarker(i)} onMouseLeave={() => setActiveMarker(null)}>
+          <div 
+            className="relative flex flex-col items-center group cursor-pointer" 
+            onMouseEnter={() => setActiveHoverMarker(i)} 
+            onMouseLeave={() => setActiveHoverMarker(null)}
+            onClick={() => setSelectedMarker(i)}
+          >
             <div className={`w-2 h-2 rounded-full border border-white/50 transition-all duration-300
               ${marker.status === 'warning' ? 'bg-orange-500 shadow-[0_0_8px_#f97316]' : 'bg-cyan-400 shadow-[0_0_8px_#00e5ff]'}
-              ${activeMarker === i ? 'scale-125' : 'scale-100'}`}>
+              ${activeHoverMarker === i ? 'scale-125' : 'scale-100'}`}>
               <div className="absolute inset-0 bg-white rounded-full animate-ping opacity-20"></div>
             </div>
             <div className={`mt-1.5 px-2 py-0.5 bg-[#0a1a3a]/90 backdrop-blur-sm border border-white/10 rounded-full shadow-lg transition-all 
-              ${activeMarker === i ? 'border-cyan-400 bg-cyan-900/60' : ''}`}>
+              ${activeHoverMarker === i ? 'border-cyan-400 bg-cyan-900/60' : ''}`}>
                <span className="text-[8px] font-bold text-white tracking-widest whitespace-nowrap">{marker.label}</span>
             </div>
           </div>
@@ -94,6 +101,13 @@ const CentralView: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* Detail Modal */}
+      <DetailModal 
+        isOpen={selectedMarker !== null} 
+        onClose={() => setSelectedMarker(null)}
+        markerData={selectedMarker !== null ? markers[selectedMarker] : null}
+      />
     </div>
   );
 };

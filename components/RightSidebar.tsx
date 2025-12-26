@@ -79,8 +79,8 @@ const RightSidebar: React.FC = () => {
 
   return (
     <div className="w-[380px] h-full flex flex-col p-2 space-y-2 z-20 overflow-hidden">
-      {/* 1. 未来降雨预报 */}
-      <DashboardCard title="未来降雨预报(24小时)" className="h-[250px] shrink-0">
+      {/* 1. 未来降雨预报 - Height reduced to 200px */}
+      <DashboardCard title="未来降雨预报(24小时)" className="h-[200px] shrink-0">
         <div className="flex flex-col h-full relative py-1">
            <div className="flex mb-1">
              {rainForecastData.map((w, i) => (
@@ -239,8 +239,8 @@ const RightSidebar: React.FC = () => {
         </div>
       </DashboardCard>
 
-      {/* 4. 项目概况 */}
-      <DashboardCard title="项目概况" className="h-[120px]">
+      {/* 4. 项目概况 - Height increased to 170px */}
+      <DashboardCard title="项目概况" className="h-[170px]">
         <div className="relative h-full flex items-center px-3">
            <div className="absolute right-2 bottom-2 opacity-5">
               <ShieldCheck size={40} className="text-cyan-400" />
