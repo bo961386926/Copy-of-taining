@@ -21,7 +21,7 @@ const CentralView: React.FC<CentralViewProps> = ({ onEnterSystem, currentProject
       left: '40%', 
       label: '雨量筒', 
       val: '0.0mm', 
-      status: 'online',
+      status: 'online', 
       type: 'rain' 
     },
     // Level Monitor 1 - 1# Depot Gutter
@@ -141,11 +141,6 @@ const CentralView: React.FC<CentralViewProps> = ({ onEnterSystem, currentProject
          <path d="M 450 480 Q 550 520 650 480" stroke="#00e5ff" strokeWidth="1" strokeDasharray="5 5" opacity="0.3" className="animate-pulse" />
 
       </svg>
-
-      {/* Decorative Floating Elements */}
-      <div className="absolute top-[15%] left-[10%] opacity-20 animate-pulse delay-700">
-         <div className="w-32 h-32 border border-cyan-400 rounded-full border-dashed animate-[spin_20s_linear_infinite]"></div>
-      </div>
 
       {/* Central Title HUD */}
       <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 w-[95%] max-w-3xl text-center pointer-events-none">
