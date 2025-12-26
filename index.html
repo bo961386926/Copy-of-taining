@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>泰宁集团 - 建筑排水智慧管理与运维平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --tech-cyan: #00e5ff;
+        --tech-blue: #3b82f6;
+        --tech-bg: #010c1e;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--tech-bg);
+        color: #fff;
+        font-family: 'Noto Sans SC', sans-serif;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      .font-orbitron {
+        font-family: 'Orbitron', sans-serif;
+      }
+      
+      .grid-bg {
+        background-image: 
+          linear-gradient(rgba(0, 229, 255, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 229, 255, 0.08) 1px, transparent 1px);
+        background-size: 50px 50px;
+      }
+
+      /* Scanning Light Effect */
+      .scan-light {
+        position: relative;
+        overflow: hidden;
+      }
+      .scan-light::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        animation: scan-move 4s infinite linear;
+      }
+      @keyframes scan-move {
+        0% { left: -100%; }
+        100% { left: 100%; }
+      }
+
+      /* Card Breathing */
+      .card-breathing {
+        animation: card-border-pulse 4s ease-in-out infinite;
+      }
+      @keyframes card-border-pulse {
+        0%, 100% { border-color: rgba(0, 229, 255, 0.3); box-shadow: 0 0 10px rgba(0, 229, 255, 0.1); }
+        50% { border-color: rgba(0, 229, 255, 0.6); box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); }
+      }
+      
+      /* Red Alert Pulse */
+      @keyframes alert-card-pulse {
+        0%, 100% { border-color: rgba(220, 38, 38, 0.4); box-shadow: inset 0 0 10px rgba(220, 38, 38, 0.1); }
+        50% { border-color: rgba(220, 38, 38, 0.8); box-shadow: inset 0 0 20px rgba(220, 38, 38, 0.3); }
+      }
+
+      /* Rotation for Radar */
+      .rotate-slow {
+        animation: rotate-360 20s linear infinite;
+      }
+      @keyframes rotate-360 {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      /* Metric Glow Text Animation */
+      .metric-glow {
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 5px rgba(0, 229, 255, 0.6);
+        animation: glow-pulse 3s infinite;
+      }
+      @keyframes glow-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+      }
+
+      /* Vertical Ticker Animation */
+      .ticker-container {
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+      }
+
+      /* Custom Scrollbar */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(0, 229, 255, 0.4);
+        border-radius: 2px;
+      }
+
+      /* Scanning Radar Effect */
+      .radar-wave {
+        position: absolute;
+        border-radius: 50%;
+        border: 1px solid rgba(0, 229, 255, 0.4);
+        animation: radar-expand 10s linear infinite;
+        pointer-events: none;
+      }
+      @keyframes radar-expand {
+        0% { transform: scale(0.1); opacity: 0; }
+        5% { opacity: 0.8; }
+        100% { transform: scale(4); opacity: 0; }
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "react-dom": "https://esm.sh/react-dom@^19.2.3",
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "echarts": "https://esm.sh/echarts@^6.0.0"
+  }
+}
+</script>
+    <script>
+      // 测试 importmap 是否正常工作
+      console.log('Import map test');
+    </script>
+  </head>
+<body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+    <script>
+      // 页面加载完成后测试
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded');
+      });
+    </script>
+  </body>
+</html>
