@@ -18,15 +18,20 @@ const rainForecastData = [
   { time: '15:00', rainfall: 0.0 },
 ];
 
-const deviceStatusData = [
-  { name: '正常', value: 11, color: '#00e5ff' },
-  { name: '故障', value: 0, color: '#fbbf24' },
+const equipmentDetails = [
+  { type: '液位计', total: 4, normal: 3 },
+  { type: '负压传感器', total: 4, normal: 2 },
+  { type: '流量计', total: 3, normal: 3 },
 ];
 
-const equipmentDetails = [
-  { type: '液位计', total: 4, normal: 4 },
-  { type: '负压传感器', total: 4, normal: 4 },
-  { type: '流量计', total: 3, normal: 3 },
+// Calculate aggregates
+const totalDevices = equipmentDetails.reduce((acc, item) => acc + item.total, 0);
+const onlineDevices = equipmentDetails.reduce((acc, item) => acc + item.normal, 0);
+const offlineDevices = totalDevices - onlineDevices;
+
+const deviceStatusData = [
+  { name: '在线', value: onlineDevices, color: '#00e5ff' },
+  { name: '离线', value: offlineDevices, color: '#fbbf24' },
 ];
 
 const maintenanceAlerts = [
@@ -137,31 +142,45 @@ const RightSidebar: React.FC = () => {
       {/* 2. 监测设备状态 */}
       <DashboardCard title="监测设备状态" className="h-[200px] shrink-0">
         <div className="flex h-full items-center py-1">
-          <div className="w-[35%] h-full relative">
+          <div className="w-[40%] h-full relative">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={deviceStatusData} innerRadius="65%" outerRadius="90%" paddingAngle={3} dataKey="value" startAngle={90} endAngle={450}>
+                <Pie data={deviceStatusData} innerRadius="65%" outerRadius="85%" dataKey="value" startAngle={90} endAngle={450}>
                   {deviceStatusData.map((e, i) => <Cell key={i} fill={e.color} stroke="none" />)}
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-lg font-black text-white font-orbitron leading-none">11</span>
-              <span className="text-[7px] text-cyan-300 font-bold uppercase tracking-widest mt-0.5">ONLINE</span>
+              <span className="text-xl font-black text-white font-orbitron leading-none">{totalDevices}</span>
+              <span className="text-[8px] text-cyan-300 font-bold uppercase tracking-widest mt-1">TOTAL</span>
             </div>
           </div>
-          <div className="w-[65%] flex flex-col justify-center space-y-2.5 px-4">
-             {equipmentDetails.map((item, i) => (
-               <div key={i} className="flex items-center justify-between">
-                 <div className="flex items-center">
-                    <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full mr-2.5"></div>
-                    <span className="text-[10px] text-white/90 font-bold">{item.type}</span>
+          <div className="w-[60%] flex flex-col justify-center space-y-2 pr-4">
+             {equipmentDetails.map((item, i) => {
+               const offline = item.total - item.normal;
+               return (
+                 <div key={i} className="flex items-center justify-between border-b border-white/5 pb-1 last:border-0 group">
+                    <div className="flex items-center">
+                       <div className={`w-1.5 h-1.5 rounded-full mr-2 shadow-[0_0_5px_currentColor] group-hover:scale-125 transition-transform ${offline > 0 ? 'bg-yellow-400 text-yellow-400' : 'bg-cyan-400 text-cyan-400'}`}></div>
+                       <span className="text-[10px] text-white/80">{item.type}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                       <div className="px-1.5 py-0.5 bg-cyan-900/30 border border-cyan-500/30 rounded-[2px] min-w-[50px] flex justify-end items-baseline">
+                          <span className="text-xs font-orbitron font-bold text-cyan-400">{item.normal}</span>
+                          
+                          {offline > 0 && (
+                            <span className="text-xs font-orbitron font-bold text-yellow-400 ml-1">
+                               <span className="text-[8px] opacity-60 mr-[1px]">!</span>{offline}
+                            </span>
+                          )}
+                          
+                          <span className="text-[8px] text-white/40 mx-0.5">/</span>
+                          <span className="text-[8px] text-white/40">{item.total}</span>
+                       </div>
+                    </div>
                  </div>
-                 <div className="bg-[#0a1a3a] border border-blue-400/20 rounded px-2 py-0.5 text-[9px] font-orbitron font-bold text-cyan-300 min-w-[40px] text-center">
-                   {item.normal}/{item.total}
-                 </div>
-               </div>
-             ))}
+               );
+             })}
           </div>
         </div>
       </DashboardCard>

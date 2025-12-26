@@ -659,7 +659,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
       {/* RIGHT SIDEBAR - Analysis */}
       <div className="w-[300px] flex flex-col space-y-2">
         {/* REPLACED WEATHER WITH EXPANDED MONITORING CHART */}
-        <div className="bg-blue-900/10 border border-blue-400/20 rounded-sm p-2 flex flex-col h-[350px]">
+        <div className="bg-blue-900/10 border border-blue-400/20 rounded-sm p-2 flex flex-col h-[240px]">
            <div className="text-xs font-bold text-white italic border-l-2 border-cyan-400 pl-2 mb-2">监测数据趋势 (24h)</div>
            <div className="flex-1 relative">
              <ResponsiveContainer width="100%" height="100%">
