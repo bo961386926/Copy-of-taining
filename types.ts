@@ -16,3 +16,10 @@ export interface WeatherData {
   temp: number;
   icon: string;
 }
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  location?: string;
+}

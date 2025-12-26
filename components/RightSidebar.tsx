@@ -6,6 +6,11 @@ import {
   PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
 import { CloudRain, Bell, ShieldCheck, AlertTriangle, Info } from 'lucide-react';
+import { Project } from '../types';
+
+interface RightSidebarProps {
+  currentProject?: Project;
+}
 
 const rainForecastData = [
   { time: '18:00', rainfall: 0.2 },
@@ -47,7 +52,7 @@ const maintenanceAlerts = [
   { id: 10, type: '信息', title: '历史数据备份', content: '7月运行报告已导出，综合效率提升12%。', time: '1d' },
 ];
 
-const RightSidebar: React.FC = () => {
+const RightSidebar: React.FC<RightSidebarProps> = ({ currentProject }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [transitionEnabled, setTransitionEnabled] = useState(true);
   
@@ -265,7 +270,7 @@ const RightSidebar: React.FC = () => {
               <ShieldCheck size={40} className="text-cyan-400" />
            </div>
            <p className="text-[10px] leading-relaxed text-white/70 font-medium italic border-l-2 border-cyan-500/30 pl-3">
-            北京轨道交通13号线扩能提升工程小辛庄停车场占地面积约22.30公顷，总建筑面积约10.8万平方米，包含运用库、综合楼、调机车库等共11座单体建筑物。其中运用库屋面面积7万平方米，采用了虹吸式屋面排水系统，共设置108个系统，343个雨水斗。
+            {currentProject ? currentProject.description : '暂无项目描述'}
           </p>
         </div>
       </DashboardCard>

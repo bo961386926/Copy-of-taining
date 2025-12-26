@@ -1,13 +1,35 @@
 
-import React, { useState, useEffect } from 'react';
-import { Cloud, Terminal } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Cloud, Terminal, ChevronDown, Check, MapPin } from 'lucide-react';
+import { Project } from '../types';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  projects?: Project[];
+  currentProject?: Project;
+  onProjectChange?: (project: Project) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ projects = [], currentProject, onProjectChange }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isProjectDropdownOpen, setIsProjectDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsProjectDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const formatDate = (date: Date) => {
@@ -22,28 +44,86 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="h-12 w-full flex items-center justify-between px-6 bg-[#020d24]/80 border-b border-cyan-400/30 backdrop-blur-xl z-50">
-      <div className="flex items-center space-x-4">
-        <div className="text-2xl font-orbitron font-black text-cyan-400 tracking-tighter text-glow-cyan italic animate-[glow-pulse_2s_infinite]">DELION</div>
-        <div className="h-6 w-[1px] bg-white/20 mx-1"></div>
-        <div>
-          <h1 className="text-base font-black text-white tracking-[0.15em] drop-shadow-lg flex items-center">
+    <header className="h-12 w-full flex items-center justify-between px-6 bg-[#020d24]/80 border-b border-cyan-400/30 backdrop-blur-xl z-50 relative">
+      {/* Left Side: Brand & Project Switcher */}
+      <div className="flex items-center space-x-4 h-full relative z-50">
+        {/* Brand Logo */}
+        <div className="flex items-center">
+          <div className="text-2xl font-orbitron font-black text-cyan-400 tracking-tighter text-glow-cyan italic animate-[glow-pulse_2s_infinite]">DELION</div>
+          <div className="h-6 w-[1px] bg-white/20 mx-3"></div>
+          <h1 className="text-base font-black text-white tracking-[0.15em] drop-shadow-lg flex items-center whitespace-nowrap">
             <Terminal size={16} className="mr-2 text-cyan-400" />
             泰宁集团
           </h1>
         </div>
+
+        {/* Project Switcher - Moved Here */}
+        <div className="relative ml-4" ref={dropdownRef}>
+           <button 
+             onClick={() => setIsProjectDropdownOpen(!isProjectDropdownOpen)}
+             className={`
+               flex items-center space-x-2 px-3 py-1.5 rounded-sm border transition-all duration-300
+               ${isProjectDropdownOpen 
+                 ? 'bg-cyan-900/40 border-cyan-400/50 text-white' 
+                 : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-cyan-400/30 hover:text-cyan-100'}
+             `}
+           >
+              <MapPin size={14} className="text-cyan-400 shrink-0" />
+              <span className="text-xs font-bold max-w-[200px] truncate">
+                {currentProject ? currentProject.name : '选择项目'}
+              </span>
+              <ChevronDown size={12} className={`transition-transform duration-300 ${isProjectDropdownOpen ? 'rotate-180 text-cyan-400' : 'text-white/50'}`} />
+           </button>
+
+           {/* Dropdown Menu */}
+           {isProjectDropdownOpen && (
+             <div className="absolute top-full left-0 mt-2 w-[320px] bg-[#020d24]/95 border border-cyan-400/30 rounded-sm shadow-[0_10px_40px_rgba(0,0,0,0.8)] overflow-hidden backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200">
+                <div className="p-2 border-b border-white/10 bg-cyan-900/20 flex justify-between items-center">
+                   <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest">切换项目 / Switch Project</p>
+                </div>
+                <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+                  {projects.map((proj) => (
+                    <div 
+                      key={proj.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onProjectChange?.(proj);
+                        setIsProjectDropdownOpen(false);
+                      }}
+                      className={`
+                        px-3 py-3 border-b border-white/5 cursor-pointer flex items-center justify-between group/item transition-all
+                        ${currentProject?.id === proj.id ? 'bg-cyan-900/30' : 'hover:bg-white/5'}
+                      `}
+                    >
+                       <div className="flex flex-col">
+                         <span className={`text-xs font-bold transition-colors line-clamp-1 ${currentProject?.id === proj.id ? 'text-cyan-400' : 'text-white/80 group-hover/item:text-white'}`}>
+                           {proj.name}
+                         </span>
+                         {currentProject?.id === proj.id && <span className="text-[9px] text-cyan-500/70 font-mono mt-0.5">CURRENTLY ACTIVE</span>}
+                       </div>
+                       {currentProject?.id === proj.id && <Check size={14} className="text-cyan-400 ml-2 shrink-0" />}
+                    </div>
+                  ))}
+                </div>
+             </div>
+           )}
+        </div>
       </div>
 
-      <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
-        <div className="bg-gradient-to-b from-blue-700/20 to-blue-900/40 px-12 py-1 border-x border-b border-cyan-400/40 rounded-b-2xl shadow-[0_5px_20px_rgba(0,229,255,0.2)] group cursor-default">
-           <span className="text-lg font-black tracking-[0.4em] text-white text-glow-white uppercase italic transition-all group-hover:tracking-[0.45em]">
+      {/* Central Title - Static Display Only */}
+      <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none">
+        <div 
+          className="bg-gradient-to-b from-blue-700/20 to-blue-900/40 px-12 py-1 border-x border-b border-cyan-400/40 rounded-b-2xl shadow-[0_5px_20px_rgba(0,229,255,0.2)] flex items-center space-x-2"
+        >
+           <span className="text-lg font-black tracking-[0.4em] text-white text-glow-white uppercase italic whitespace-nowrap">
              建筑排水智慧管理与运维平台
            </span>
         </div>
       </div>
 
-      <div className="flex items-center space-x-6">
-        <div className="text-right">
+      {/* Right Side: Time & Weather */}
+      <div className="flex items-center space-x-6 z-50">
+        <div className="text-right hidden md:block">
           <div className="font-orbitron text-white text-[11px] font-bold tracking-[0.05em] opacity-90">
             {formatDate(currentTime)}
           </div>
