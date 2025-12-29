@@ -1,25 +1,5 @@
 <template>
   <div class="flex w-full h-full p-2 space-x-2 bg-[#0f172a] z-40 relative animate-in fade-in duration-300">
-    
-    <!-- CSS for Rain Animation -->
-    <style>
-      @keyframes rainFall {
-        0% { transform: translateY(-10vh); opacity: 0; }
-        10% { opacity: 1; }
-        90% { opacity: 1; }
-        100% { transform: translateY(80vh); opacity: 0; }
-      }
-      .rain-drop {
-        position: absolute;
-        top: 0;
-        width: 1px;
-        height: 30px;
-        background: linear-gradient(to bottom, transparent, rgba(0, 229, 255, 0.8));
-        animation: rainFall linear infinite;
-        pointer-events: none;
-        z-index: 10;
-      }
-    </style>
 
     <!-- LEFT SIDEBAR - Location List -->
     <!-- Lightened bg from blue-900/10 to #1e293b/50 -->
@@ -130,25 +110,6 @@
       >
          <!-- Grid Background -->
          <div class="absolute inset-0 grid-bg opacity-30"></div>
-         
-         <!-- Style for flow animation -->
-         <style>
-           @keyframes dashFlow {
-             to { stroke-dashoffset: -20; }
-           }
-           .flow-line {
-             stroke-dasharray: 4 4;
-             animation: dashFlow 0.5s linear infinite;
-           }
-           @keyframes bubbleRise {
-             0% { transform: translateY(0) scale(0.5); opacity: 0; }
-             50% { opacity: 0.8; }
-             100% { transform: translateY(-20px) scale(1.2); opacity: 0; }
-           }
-           .bubble {
-             animation: bubbleRise 2s ease-out infinite;
-           }
-         </style>
 
          <!-- System Schematic SVG -->
          <svg class="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 800 500">
@@ -280,7 +241,7 @@
       <!-- Back Button Overlay -->
       <button 
         @click="$emit('back')"
-        class="absolute bottom-0 left-1/2 -translate-x-1/2 bg-[#0f172a] border-t border-x border-cyan-500/50 rounded-t-lg px-6 py-1 text-xs text-cyan-400 hover:text-white hover:bg-cyan-900/50 transition-colors z-50 flex items-center space-x-2"
+        class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#0f172a] border-t border-x border-cyan-500/50 rounded-t-lg px-6 py-1 text-xs text-cyan-400 hover:text-white hover:bg-cyan-900/50 transition-colors z-50 flex items-center space-x-2"
       >
         <ChevronLeft :size="12" />
         <span>返回系统平台</span>
@@ -294,45 +255,7 @@
       <div class="bg-[#1e293b]/50 border border-blue-400/30 rounded-sm p-2 flex flex-col h-[360px]">
          <div class="text-xs font-bold text-white italic border-l-2 border-cyan-400 pl-2 mb-2">监测数据趋势 (24h)</div>
          <div class="flex-1 relative">
-           <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart :data="trendData" :margin="{top: 5, right: 0, bottom: 5, left: -25}">
-                 <defs>
-                   <linearGradient id="colorFlow" x1="0" y1="0" x2="0" y2="1">
-                     <stop offset="5%" stop-color="#3b82f6" stop-opacity="0.3"/>
-                     <stop offset="95%" stop-color="#3b82f6" stop-opacity="0"/>
-                   </linearGradient>
-                   <linearGradient id="colorPressure" x1="0" y1="0" x2="0" y2="1">
-                     <stop offset="5%" stop-color="#fbbf24" stop-opacity="0.3"/>
-                     <stop offset="95%" stop-color="#fbbf24" stop-opacity="0"/>
-                   </linearGradient>
-                 </defs>
-                 <CartesianGrid stroke-dasharray="3 3" :vertical="false" stroke="#ffffff" :opacity="0.1" />
-                 <XAxis data-key="time" :font-size="8" :tick="{fill: '#94a3b8'}" :axis-line="false" :tick-line="false" />
-                 
-                 <!-- Left Axis: Flow & Pressure (mbar, m3/h - sharing scale roughly for viz, or just primary) -->
-                 <YAxis yAxis-id="left" :font-size="8" :tick="{fill: '#fbbf24'}" :axis-line="false" :tick-line="false" :label="{ value: 'mbar/m³h', angle: -90, position: 'insideLeft', fill: '#fbbf24', fontSize: 8, opacity: 0.5, dy: 30 }" />
-                 
-                 <!-- Right Axis: Level (cm) -->
-                 <YAxis yAxis-id="right" orientation="right" :font-size="8" :tick="{fill: '#22d3ee'}" :axis-line="false" :tick-line="false" :label="{ value: 'cm', angle: 90, position: 'insideRight', fill: '#22d3ee', fontSize: 8, opacity: 0.5, dy: -10 }" />
-
-                 <Tooltip 
-                   :content-style="{backgroundColor: '#0f172a', borderColor: '#3b82f6', fontSize: '10px'}" 
-                   :item-style="{color: '#fff'}"
-                   :label-style="{color: '#fff', marginBottom: '5px', fontWeight: 'bold'}"
-                   :formatter="(value: any, name: any) => {
-                      if (name === '运行负压') return [`${value} mbar`, name];
-                      if (name === '排水流量') return [`${value} m³/h`, name];
-                      if (name === '天沟液位') return [`${value} cm`, name];
-                      return [value, name];
-                   }"
-                 />
-                 <Legend :icon-size="8" :wrapper-style="{fontSize: '10px', paddingTop: '5px'}" />
-                 
-                 <Area yAxis-id="left" type="monotone" data-key="pressure" name="运行负压" stroke="#fbbf24" :fill="`url(#colorPressure)`" :stroke-width="1.5" />
-                 <Line yAxis-id="left" type="monotone" data-key="flow" name="排水流量" stroke="#3b82f6" :dot="false" :stroke-width="1.5" />
-                 <Line yAxis-id="right" type="monotone" data-key="level" name="天沟液位" stroke="#22d3ee" :dot="false" :stroke-width="1.5" stroke-dasharray="3 3" />
-              </ComposedChart>
-           </ResponsiveContainer>
+           <div ref="trendChartRef" class="w-full h-full"></div>
          </div>
       </div>
 
@@ -474,9 +397,7 @@ import {
   Search, Cloud, Moon, Sun, CloudRain, Wind, ChevronLeft, ChevronRight, ShieldCheck, Droplets, Zap, CloudLightning, 
   Camera, Maximize2, Maximize, Minimize, Play, Pause, X, Video, Volume2, VolumeX, Move, Mic, MicOff, ZoomIn 
 } from 'lucide-vue-next'
-import { 
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Area, Legend 
-} from 'recharts'
+import * as echarts from 'echarts'
 import VideoPlayer from './VideoPlayer.vue'
 
 interface Location {
@@ -579,6 +500,10 @@ const isRaining: Ref<boolean> = ref(true); // Control rain state - set to TRUE b
 const currentPhotoIndex: Ref<number> = ref(0);
 const enlargedPhoto: Ref<Location | null> = ref(null);
 
+// --- 右侧趋势图（ECharts） ---
+const trendChartRef: Ref<HTMLElement | null> = ref(null);
+let trendChart: echarts.ECharts | null = null;
+
 // Video State
 const isVideoPlaying: Ref<boolean> = ref(true);
 const videoFullscreen: Ref<boolean> = ref(false);
@@ -610,6 +535,113 @@ onMounted(() => {
   };
   
   window.addEventListener('keydown', keydownHandler);
+
+  if (trendChartRef.value) {
+    trendChart = echarts.init(trendChartRef.value);
+    trendChart.setOption({
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'cross' },
+        formatter: (params: any) => {
+          const p = params as any[];
+          const time = p[0]?.axisValue;
+          const pressure = p.find(i => i.seriesName === '运行负压')?.data;
+          const flow = p.find(i => i.seriesName === '排水流量')?.data;
+          const level = p.find(i => i.seriesName === '天沟液位')?.data;
+          return [
+            `<span style="font-weight:700">${time}</span>`,
+            `运行负压：${pressure} mbar`,
+            `排水流量：${flow} m³/h`,
+            `天沟液位：${level} cm`
+          ].join('<br />');
+        }
+      },
+      legend: {
+        data: ['运行负压', '排水流量', '天沟液位'],
+        textStyle: { color: '#e5e7eb', fontSize: 10 }
+      },
+      grid: {
+        left: 40,
+        right: 40,
+        top: 30,
+        bottom: 30
+      },
+      xAxis: {
+        type: 'category',
+        data: trendData.map(d => d.time),
+        axisLabel: { color: '#94a3b8', fontSize: 8 },
+        axisLine: { lineStyle: { color: 'rgba(148,163,184,0.4)' } },
+        axisTick: { show: false }
+      },
+      yAxis: [
+        {
+          type: 'value',
+          name: 'mbar / m³h',
+          nameLocation: 'middle',
+          nameGap: 45,
+          nameTextStyle: { color: '#fbbf24', fontSize: 8, opacity: 0.6 },
+          axisLabel: { color: '#fbbf24', fontSize: 8 },
+          // 主纵轴也去掉横向网格线，和其它图表风格统一
+          splitLine: {
+            show: false
+          },
+          axisLine: { show: false },
+          axisTick: { show: false }
+        },
+        {
+          type: 'value',
+          name: 'cm',
+          nameLocation: 'middle',
+          nameGap: 35,
+          nameTextStyle: { color: '#22d3ee', fontSize: 8, opacity: 0.6 },
+          axisLabel: { color: '#22d3ee', fontSize: 8 },
+          splitLine: { show: false },
+          axisLine: { show: false },
+          axisTick: { show: false }
+        }
+      ],
+      series: [
+        {
+          name: '运行负压',
+          type: 'line',
+          yAxisIndex: 0,
+          smooth: true,
+          symbol: 'none',
+          lineStyle: { color: '#fbbf24', width: 1.5 },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(251,191,36,0.4)' },
+              { offset: 1, color: 'rgba(251,191,36,0)' }
+            ])
+          },
+          data: trendData.map(d => d.pressure)
+        },
+        {
+          name: '排水流量',
+          type: 'line',
+          yAxisIndex: 0,
+          smooth: true,
+          symbol: 'none',
+          lineStyle: { color: '#3b82f6', width: 1.5 },
+          data: trendData.map(d => d.flow)
+        },
+        {
+          name: '天沟液位',
+          type: 'line',
+          yAxisIndex: 1,
+          smooth: true,
+          symbol: 'none',
+          lineStyle: { color: '#22d3ee', width: 1.5, type: 'solid' },
+          data: trendData.map(d => d.level)
+        }
+      ]
+    });
+  }
+
+  const handleResize = () => trendChart?.resize();
+  window.addEventListener('resize', handleResize);
+  // 把处理函数挂到 window 上，便于在 onUnmounted 中移除
+  (window as any).__monitoringTrendResize__ = handleResize;
 });
 
 onUnmounted(() => {
@@ -619,6 +651,13 @@ onUnmounted(() => {
   if (keydownHandler) {
     window.removeEventListener('keydown', keydownHandler);
   }
+
+  const handler = (window as any).__monitoringTrendResize__;
+  if (handler) {
+    window.removeEventListener('resize', handler);
+    delete (window as any).__monitoringTrendResize__;
+  }
+  trendChart?.dispose();
 });
 
 const currentPhoto = computed(() => monitoringPhotos[currentPhotoIndex.value]);
@@ -707,3 +746,65 @@ const stats = computed(() => [
   { val: activeData.value.maxFlow, unit: 'L/s', label: '最大排水流量', icon: Zap, valColor: 'text-green-400' }
 ]);
 </script>
+
+<style scoped>
+@keyframes rainFall {
+  0% { transform: translateY(-10vh); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(80vh); opacity: 0; }
+}
+.rain-drop {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 229, 255, 0.8));
+  animation: rainFall linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Custom Scrollbar Styles */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.3);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #0ea5e9, #0284c7);
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00e5ff, #0284c7);
+  box-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
+}
+
+.custom-scrollbar::-webkit-scrollbar-corner {
+  background: rgba(15, 23, 42, 0.3);
+}
+
+/* Style for flow animation */
+@keyframes dashFlow {
+  to { stroke-dashoffset: -20; }
+}
+.flow-line {
+  stroke-dasharray: 4 4;
+  animation: dashFlow 0.5s linear infinite;
+}
+@keyframes bubbleRise {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(-20px) scale(1.2); opacity: 0; }
+}
+.bubble {
+  animation: bubbleRise 2s ease-out infinite;
+}
+</style>

@@ -106,6 +106,7 @@
         @mouseenter="setActiveHoverMarker(i)" 
         @mouseleave="setActiveHoverMarker(null)"
         @click="setSelectedMarker(i)"
+        @contextmenu.prevent="setEnlargedMarker(marker)"
       >
         <!-- Marker Pin -->
         <div class="relative">
@@ -160,13 +161,51 @@
       @close="setSelectedMarker(null)"
       :marker-data="selectedMarker !== null ? markers[selectedMarker] : null"
     />
+
+    <!-- Fullscreen Image Viewer for Markers -->
+    <div v-if="enlargedMarker" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-lg" @click="setEnlargedMarker(null)">
+      <div class="relative w-full max-w-4xl h-full max-h-[90vh] flex flex-col">
+        <!-- Header with title and close button -->
+        <div class="flex justify-between items-center p-4 bg-[#0f172a]/80 backdrop-blur-md border-b border-cyan-400/30">
+          <h3 class="text-lg font-bold text-white">{{ enlargedMarker?.label }} 监测照片</h3>
+          <button @click="setEnlargedMarker(null)" class="p-2 rounded-full hover:bg-white/10 transition-colors">
+            <X :size="24" class="text-white" />
+          </button>
+        </div>
+        
+        <!-- Image container with gradient background -->
+        <div class="flex-1 flex items-center justify-center bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-[#1e293b] p-4">
+          <div class="relative w-full h-full flex items-center justify-center">
+            <!-- Placeholder for image - in a real app this would be an actual image -->
+            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br" :class="enlargedMarker?.gradient || 'from-gray-700 to-gray-900'">
+              <Camera :size="48" :class="enlargedMarker?.iconColor || 'text-gray-400'" />
+            </div>
+          </div>
+        </div>
+        
+        <!-- Footer with metadata -->
+        <div class="p-4 bg-[#0f172a]/80 backdrop-blur-md border-t border-cyan-400/30">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-sm text-cyan-200 font-mono">{{ enlargedMarker?.time }}</p>
+              <p class="text-xs text-gray-400">{{ enlargedMarker?.date }}</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <ChevronLeft :size="20" class="text-cyan-400 cursor-pointer hover:text-white" />
+              <span class="text-sm text-white">1/1</span>
+              <ChevronRight :size="20" class="text-cyan-400 cursor-pointer hover:text-white" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, Ref } from 'vue'
+import { ref, Ref, computed } from 'vue'
 import DetailModal from './DetailModal.vue'
-import { LogIn, Layers } from 'lucide-vue-next'
+import { LogIn, Layers, Camera, X, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { Project } from '../types'
 
 interface Marker {
@@ -176,6 +215,12 @@ interface Marker {
   val: string;
   status: string;
   type: string;
+  // 添加图片相关属性
+  image?: string;
+  gradient?: string;
+  iconColor?: string;
+  time?: string;
+  date?: string;
 }
 
 interface Props {
@@ -191,8 +236,9 @@ defineEmits<Emits>();
 
 const activeHoverMarker: Ref<number | null> = ref(null);
 const selectedMarker: Ref<number | null> = ref(null);
+const enlargedMarker: Ref<Marker | null> = ref(null); // 用于全屏查看的标记点
 
-// Updated markers: 4 Level Monitors + 1 Rain Gauge
+// Updated markers: 4 Level Monitors + 1 Rain Gauge with image data
 const markers: Marker[] = [
   // Rain Gauge - Placed on the high roof of 1# Depot
   { 
@@ -201,7 +247,11 @@ const markers: Marker[] = [
     label: '雨量筒', 
     val: '0.0mm', 
     status: 'online', 
-    type: 'rain' 
+    type: 'rain',
+    gradient: 'from-[#1e293b] via-[#334155] to-[#1e293b]',
+    iconColor: 'text-blue-400',
+    time: '22:35:10',
+    date: '2025-12-26'
   },
   // Level Monitor 1 - 1# Depot Gutter
   { 
@@ -210,7 +260,11 @@ const markers: Marker[] = [
     label: '1# 库天沟液位', 
     val: '2.5cm', 
     status: 'online',
-    type: 'level' 
+    type: 'level',
+    gradient: 'from-[#064e3b] via-[#065f46] to-[#064e3b]',
+    iconColor: 'text-emerald-400',
+    time: '22:36:22',
+    date: '2025-12-26'
   },
   // Level Monitor 2 - 2# Depot Gutter
   { 
@@ -219,7 +273,11 @@ const markers: Marker[] = [
     label: '2# 库天沟液位', 
     val: '1.8cm', 
     status: 'online',
-    type: 'level' 
+    type: 'level',
+    gradient: 'from-[#312e81] via-[#4338ca] to-[#312e81]',
+    iconColor: 'text-indigo-400',
+    time: '22:34:05',
+    date: '2025-12-26'
   },
   // Level Monitor 3 - Retention Pond
   { 
@@ -228,7 +286,11 @@ const markers: Marker[] = [
     label: '调蓄池液位', 
     val: '3.2m', 
     status: 'online',
-    type: 'level' 
+    type: 'level',
+    gradient: 'from-[#701a75] via-[#86198f] to-[#701a75]',
+    iconColor: 'text-fuchsia-400',
+    time: '22:38:15',
+    date: '2025-12-26'
   },
   // Level Monitor 4 - Pump House
   { 
@@ -237,7 +299,11 @@ const markers: Marker[] = [
     label: '雨水泵房液位', 
     val: '1.5m', 
     status: 'online', // Changed from warning to online for consistency unless specified
-    type: 'level' 
+    type: 'level',
+    gradient: 'from-[#1e293b] via-[#334155] to-[#1e293b]',
+    iconColor: 'text-cyan-400',
+    time: '22:39:30',
+    date: '2025-12-26'
   },
 ];
 
@@ -252,6 +318,11 @@ const setActiveHoverMarker = (index: number | null) => {
 
 const setSelectedMarker = (index: number | null) => {
   selectedMarker.value = index;
+};
+
+// 设置要全屏查看的标记点
+const setEnlargedMarker = (marker: Marker | null) => {
+  enlargedMarker.value = marker;
 };
 
 const isRainGauge = (marker: Marker) => {

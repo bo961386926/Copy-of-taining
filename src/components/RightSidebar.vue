@@ -11,16 +11,7 @@
            </div>
          </div>
          <div class="flex-1 min-h-0 relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart :data="rainForecastData" :margin="{ left: 0, right: 0, bottom: 0, top: 0 }">
-                <CartesianGrid stroke-dasharray="2 2" :vertical="false" stroke="#ffffff" :opacity="0.05" />
-                <XAxis data-key="time" hide />
-                <YAxis :font-size="7" :tick="{fill: '#ffffff', opacity: 0.5}" :axis-line="false" :tick-line="false" />
-                <Bar data-key="rainfall" :radius="[1, 1, 0, 0]" :bar-size="12">
-                  <Cell v-for="(entry, index) in rainForecastData" :key="`cell-${index}`" :fill="getRainColor(entry.rainfall)" />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            <div ref="rainChartRef" class="w-full h-full"></div>
          </div>
          <!-- 图例和数据来源 -->
          <div class="flex justify-between items-center mt-1 px-1">
@@ -55,13 +46,7 @@
     <DashboardCard title="监测设备状态" class="h-[200px] shrink-0">
       <div class="flex h-full items-center py-1">
         <div class="w-[40%] h-full relative">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie :data="deviceStatusData" inner-radius="65%" outer-radius="85%" data-key="value" :start-angle="90" :end-angle="450">
-                <Cell v-for="(e, i) in deviceStatusData" :key="i" :fill="e.color" stroke="none" />
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+          <div ref="deviceChartRef" class="w-full h-full"></div>
           <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <span class="text-xl font-black text-white font-orbitron leading-none">{{ totalDevices }}</span>
             <span class="text-[8px] text-cyan-300 font-bold uppercase tracking-widest mt-1">TOTAL</span>
@@ -168,10 +153,7 @@
 <script setup lang="ts">
 import { ref, Ref, computed, onMounted, onUnmounted } from 'vue'
 import DashboardCard from './DashboardCard.vue'
-import { 
-  XAxis, YAxis, CartesianGrid, ResponsiveContainer,
-  PieChart, Pie, Cell, BarChart, Bar
-} from 'recharts'
+import * as echarts from 'echarts'
 import { CloudRain, Bell, ShieldCheck, AlertTriangle, Info } from 'lucide-vue-next'
 import { Project } from '../types'
 
@@ -255,33 +237,135 @@ const displayAlerts = computed(() => [...maintenanceAlerts, maintenanceAlerts[0]
 const itemMarginBottom = 6;
 const itemHeight = 52 + itemMarginBottom; 
 
+// --- ECharts DOM refs & 实例 ---
+const rainChartRef: Ref<HTMLElement | null> = ref(null);
+const deviceChartRef: Ref<HTMLElement | null> = ref(null);
+
+let rainChart: echarts.ECharts | null = null;
+let deviceChart: echarts.ECharts | null = null;
+
+const initRainChart = () => {
+  if (!rainChartRef.value) return;
+  if (rainChart) {
+    rainChart.dispose();
+  }
+  rainChart = echarts.init(rainChartRef.value);
+  rainChart.setOption({
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'shadow' }
+    },
+    grid: {
+      left: 10,
+      right: 10,
+      top: 10,
+      bottom: 10,
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: rainForecastData.map(d => d.time),
+      axisLabel: {
+        fontSize: 8,
+        color: '#e5e7eb'
+      },
+      axisLine: { show: false },
+      axisTick: { show: false }
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: {
+        fontSize: 8,
+        color: '#e5e7eb'
+      },
+      // 去掉横向网格线，保持卡片简洁
+      splitLine: {
+        show: false
+      },
+      axisLine: { show: false },
+      axisTick: { show: false }
+    },
+    series: [
+      {
+        name: '降雨量',
+        type: 'bar',
+        barWidth: 10,
+        itemStyle: {
+          color: (params: any) => {
+            const val = params.value as number;
+            if (val >= 40) return '#ef4444';
+            if (val >= 20) return '#f97316';
+            if (val >= 10) return '#fbbf24';
+            if (val >= 5) return '#60a5fa';
+            return '#22d3ee';
+          },
+          borderRadius: [2, 2, 0, 0]
+        },
+        data: rainForecastData.map(d => d.rainfall)
+      }
+    ]
+  });
+};
+
+const initDeviceChart = () => {
+  if (!deviceChartRef.value) return;
+  if (deviceChart) {
+    deviceChart.dispose();
+  }
+  deviceChart = echarts.init(deviceChartRef.value);
+  deviceChart.setOption({
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}: {c} ({d}%)'
+    },
+    legend: {
+      show: false
+    },
+    series: [
+      {
+        name: '设备状态',
+        type: 'pie',
+        radius: ['65%', '85%'],
+        avoidLabelOverlap: false,
+        label: { show: false },
+        labelLine: { show: false },
+        data: deviceStatusData.map(d => ({
+          name: d.name,
+          value: d.value,
+          itemStyle: { color: d.color }
+        }))
+      }
+    ]
+  });
+};
+
+const handleResize = () => {
+  rainChart?.resize();
+  deviceChart?.resize();
+};
+
 let timer: number | null = null;
-let snapTimer: number | null = null;
 
 onMounted(() => {
   timer = window.setInterval(() => {
     currentIndex.value = currentIndex.value + 1;
   }, 4500);
+
+  initRainChart();
+  initDeviceChart();
+  window.addEventListener('resize', handleResize);
 });
 
 onUnmounted(() => {
   if (timer) {
     clearInterval(timer);
   }
-  if (snapTimer) {
-    clearTimeout(snapTimer);
-  }
+  window.removeEventListener('resize', handleResize);
+  rainChart?.dispose();
+  deviceChart?.dispose();
 });
 
 const getOfflineCount = (item: EquipmentDetail) => {
   return item.total - item.normal;
-};
-
-const getRainColor = (val: number) => {
-  if (val >= 40) return '#ef4444'; 
-  if (val >= 20) return '#f97316'; 
-  if (val >= 10) return '#fbbf24'; 
-  if (val >= 5) return '#60a5fa';  
-  return '#22d3ee'; 
 };
 </script>

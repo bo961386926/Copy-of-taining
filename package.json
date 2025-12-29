@@ -1,24 +1,23 @@
 {
-  "name": "copy-of-taining",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "delion-drainage-vue",
+  "version": "1.0.0",
+  "description": "A high-tech enterprise dashboard for building drainage management and operation, featuring real-time monitoring, health analysis, weather forecasts, and 3D visualization.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "recharts": "^3.6.0",
-    "react-dom": "^19.2.3",
-    "react": "^19.2.3",
-    "lucide-react": "^0.562.0",
-    "echarts": "^6.0.0"
+    "vue": "^3.5.0",
+    "vue-router": "^4.4.0",
+    "pinia": "^2.2.0",
+    "echarts": "^5.5.0",
+    "lucide-vue-next": "^0.562.0"
   },
   "devDependencies": {
-    "@types/node": "^22.14.0",
-    "@vitejs/plugin-react": "^5.0.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^5.4.0",
+    "typescript": "~5.5.0",
+    "@types/node": "^20.14.0"
   }
 }
