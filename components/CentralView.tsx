@@ -144,11 +144,6 @@ const CentralView: React.FC<CentralViewProps> = ({ onEnterSystem, currentProject
 
       </svg>
 
-      {/* Decorative Floating Elements */}
-      <div className="absolute top-[15%] left-[10%] opacity-20 animate-pulse delay-700">
-         <div className="w-32 h-32 border border-cyan-400 rounded-full border-dashed animate-[spin_20s_linear_infinite]"></div>
-      </div>
-
       {/* Central Title HUD - Lightened Background */}
       <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 w-[95%] max-w-3xl text-center pointer-events-none">
         <div className="inline-block relative px-8 py-3 bg-[#0f172a]/80 backdrop-blur-md border-x border-cyan-400/40 rounded-sm">

@@ -168,9 +168,17 @@ const LeftSidebar: React.FC = () => {
 
       <DashboardCard title="监测告警分析" className="h-[180px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={warningTrendYearly} margin={{ top: 10, right: 5, left: -25, bottom: 0 }}>
+          <LineChart data={warningTrendYearly} margin={{ top: 10, right: 25, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="2 2" vertical={false} stroke="#ffffff" opacity={0.05} />
-            <XAxis dataKey="name" fontSize={9} tick={{ fill: '#ffffff', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
+            <XAxis 
+              dataKey="name" 
+              fontSize={9} 
+              tick={{ fill: '#ffffff', fontWeight: 'bold' }} 
+              axisLine={false} 
+              tickLine={false} 
+              interval={0} 
+              padding={{ left: 10, right: 10 }}
+            />
             <YAxis fontSize={9} tick={{ fill: '#ffffff', fontWeight: 'bold' }} axisLine={false} tickLine={false} />
             <Tooltip 
               {...commonTooltipProps} 
