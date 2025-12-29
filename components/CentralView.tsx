@@ -63,21 +63,23 @@ const CentralView: React.FC<CentralViewProps> = ({ onEnterSystem, currentProject
   ];
 
   return (
-    <div className="flex-1 h-full relative overflow-hidden bg-[#000a18] grid-bg perspective-1000">
+    // Lightened Background from #000a18 to #0f172a
+    <div className="flex-1 h-full relative overflow-hidden bg-[#0f172a] grid-bg perspective-1000">
       {/* Background: Digital Twin / Schematic of Maintenance Depot */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
          <defs>
+            {/* Lighter Building Gradients */}
             <linearGradient id="buildingGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-               <stop offset="0%" stopColor="#1e293b" stopOpacity="0.9" />
-               <stop offset="100%" stopColor="#0f172a" stopOpacity="0.8" />
+               <stop offset="0%" stopColor="#334155" stopOpacity="0.9" />
+               <stop offset="100%" stopColor="#1e293b" stopOpacity="0.9" />
             </linearGradient>
             <linearGradient id="roofGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-               <stop offset="0%" stopColor="#0f172a" stopOpacity="0.8" />
-               <stop offset="50%" stopColor="#1e3a8a" stopOpacity="0.4" />
-               <stop offset="100%" stopColor="#0f172a" stopOpacity="0.8" />
+               <stop offset="0%" stopColor="#1e293b" stopOpacity="0.9" />
+               <stop offset="50%" stopColor="#1d4ed8" stopOpacity="0.5" />
+               <stop offset="100%" stopColor="#1e293b" stopOpacity="0.9" />
             </linearGradient>
             <pattern id="gridPattern" width="40" height="20" patternUnits="userSpaceOnUse">
-               <path d="M 40 0 L 0 0 0 20" fill="none" stroke="rgba(0, 229, 255, 0.05)" strokeWidth="1"/>
+               <path d="M 40 0 L 0 0 0 20" fill="none" stroke="rgba(0, 229, 255, 0.1)" strokeWidth="1"/>
             </pattern>
             <filter id="glow">
                <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
@@ -91,66 +93,71 @@ const CentralView: React.FC<CentralViewProps> = ({ onEnterSystem, currentProject
          {/* --- Ground Grid / Layout --- */}
          <g transform="translate(600, 400) scale(1.5)">
             {/* Tracks entering from Right */}
-            <path d="M 100 50 L 300 150 M 120 50 L 320 150 M 140 50 L 340 150" stroke="#3b82f6" strokeWidth="1" opacity="0.3" />
+            <path d="M 100 50 L 300 150 M 120 50 L 320 150 M 140 50 L 340 150" stroke="#60a5fa" strokeWidth="1" opacity="0.4" />
             
             {/* Road network */}
-            <path d="M -200 100 L 200 300" stroke="#334155" strokeWidth="20" strokeLinecap="round" opacity="0.2" />
+            <path d="M -200 100 L 200 300" stroke="#475569" strokeWidth="20" strokeLinecap="round" opacity="0.3" />
          </g>
 
          {/* --- 2# Depot (Back Right) --- */}
          <g transform="translate(700, 200)">
-            <path d="M 0 50 L 150 0 L 300 50 L 150 100 Z" fill="url(#roofGradient)" stroke="#3b82f6" strokeWidth="1" strokeOpacity="0.5" />
+            <path d="M 0 50 L 150 0 L 300 50 L 150 100 Z" fill="url(#roofGradient)" stroke="#60a5fa" strokeWidth="1" strokeOpacity="0.6" />
             <path d="M 0 50 L 0 120 L 150 170 L 150 100 Z" fill="url(#buildingGradient)" stroke="none" />
-            <path d="M 150 170 L 300 120 L 300 50 L 150 100 Z" fill="#0f172a" opacity="0.6" />
+            <path d="M 150 170 L 300 120 L 300 50 L 150 100 Z" fill="#1e293b" opacity="0.8" />
          </g>
 
          {/* --- 1# Depot (Main Left) --- */}
          <g transform="translate(300, 250)">
             {/* Main Roof Surface */}
-            <path d="M 0 80 L 250 0 L 550 80 L 300 160 Z" fill="url(#roofGradient)" stroke="#00e5ff" strokeWidth="1.5" strokeOpacity="0.6" />
+            <path d="M 0 80 L 250 0 L 550 80 L 300 160 Z" fill="url(#roofGradient)" stroke="#22d3ee" strokeWidth="1.5" strokeOpacity="0.7" />
             {/* Grid on Roof */}
             <path d="M 0 80 L 250 0 L 550 80 L 300 160 Z" fill="url(#gridPattern)" />
             
-            {/* Side Walls */}
-            <path d="M 0 80 L 0 200 L 300 280 L 300 160 Z" fill="url(#buildingGradient)" stroke="#1e293b" strokeWidth="1" />
-            <path d="M 300 280 L 550 200 L 550 80 L 300 160 Z" fill="#020617" opacity="0.7" stroke="#1e293b" strokeWidth="1" />
+            {/* Side Walls - Lighter Stroke */}
+            <path d="M 0 80 L 0 200 L 300 280 L 300 160 Z" fill="url(#buildingGradient)" stroke="#475569" strokeWidth="1" />
+            <path d="M 300 280 L 550 200 L 550 80 L 300 160 Z" fill="#0f172a" opacity="0.8" stroke="#475569" strokeWidth="1" />
 
             {/* Roof Architectural Details (Skylights/Hoppers Lines) */}
             {/* Parallel lines along the length */}
-            <path d="M 50 64 L 350 144" stroke="#00e5ff" strokeWidth="1" strokeOpacity="0.2" />
-            <path d="M 100 48 L 400 128" stroke="#00e5ff" strokeWidth="1" strokeOpacity="0.2" />
-            <path d="M 150 32 L 450 112" stroke="#00e5ff" strokeWidth="1" strokeOpacity="0.2" />
-            <path d="M 200 16 L 500 96" stroke="#00e5ff" strokeWidth="1" strokeOpacity="0.2" />
+            <path d="M 50 64 L 350 144" stroke="#22d3ee" strokeWidth="1" strokeOpacity="0.3" />
+            <path d="M 100 48 L 400 128" stroke="#22d3ee" strokeWidth="1" strokeOpacity="0.3" />
+            <path d="M 150 32 L 450 112" stroke="#22d3ee" strokeWidth="1" strokeOpacity="0.3" />
+            <path d="M 200 16 L 500 96" stroke="#22d3ee" strokeWidth="1" strokeOpacity="0.3" />
             
             {/* Section Dividers */}
-            <path d="M 83 53 L 83 170" stroke="#00e5ff" strokeDasharray="4 4" strokeWidth="0.5" strokeOpacity="0.3" />
-            <path d="M 166 26 L 166 140" stroke="#00e5ff" strokeDasharray="4 4" strokeWidth="0.5" strokeOpacity="0.3" />
+            <path d="M 83 53 L 83 170" stroke="#22d3ee" strokeDasharray="4 4" strokeWidth="0.5" strokeOpacity="0.4" />
+            <path d="M 166 26 L 166 140" stroke="#22d3ee" strokeDasharray="4 4" strokeWidth="0.5" strokeOpacity="0.4" />
             
             {/* Highlight Glow Lines */}
-            <path d="M 0 80 L 300 160 L 550 80" stroke="#00e5ff" strokeWidth="1" filter="url(#glow)" opacity="0.4" />
+            <path d="M 0 80 L 300 160 L 550 80" stroke="#22d3ee" strokeWidth="1.5" filter="url(#glow)" opacity="0.6" />
          </g>
 
          {/* --- Pump House (Front Left) --- */}
          <g transform="translate(200, 500)">
-            <path d="M 0 30 L 60 10 L 120 30 L 60 50 Z" fill="#1e293b" stroke="#00e5ff" strokeWidth="1" />
-            <path d="M 0 30 L 0 70 L 60 90 L 60 50 Z" fill="#0f172a" stroke="#1e293b" />
-            <path d="M 60 90 L 120 70 L 120 30 L 60 50 Z" fill="#020617" stroke="#1e293b" />
+            <path d="M 0 30 L 60 10 L 120 30 L 60 50 Z" fill="#334155" stroke="#22d3ee" strokeWidth="1" />
+            <path d="M 0 30 L 0 70 L 60 90 L 60 50 Z" fill="#1e293b" stroke="#334155" />
+            <path d="M 60 90 L 120 70 L 120 30 L 60 50 Z" fill="#0f172a" stroke="#334155" />
          </g>
 
          {/* --- Connection Lines (Pipes under ground) --- */}
-         <path d="M 450 480 Q 550 520 650 480" stroke="#00e5ff" strokeWidth="1" strokeDasharray="5 5" opacity="0.3" className="animate-pulse" />
+         <path d="M 450 480 Q 550 520 650 480" stroke="#22d3ee" strokeWidth="1.5" strokeDasharray="5 5" opacity="0.5" className="animate-pulse" />
 
       </svg>
 
-      {/* Central Title HUD */}
+      {/* Decorative Floating Elements */}
+      <div className="absolute top-[15%] left-[10%] opacity-20 animate-pulse delay-700">
+         <div className="w-32 h-32 border border-cyan-400 rounded-full border-dashed animate-[spin_20s_linear_infinite]"></div>
+      </div>
+
+      {/* Central Title HUD - Lightened Background */}
       <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 w-[95%] max-w-3xl text-center pointer-events-none">
-        <div className="inline-block relative px-8 py-3 bg-[#020d24]/80 backdrop-blur-md border-x border-cyan-400/30 rounded-sm">
+        <div className="inline-block relative px-8 py-3 bg-[#0f172a]/80 backdrop-blur-md border-x border-cyan-400/40 rounded-sm">
             <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-400"></div>
             <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-400"></div>
             <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-400"></div>
             <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-400"></div>
             
-            <p className="text-[14px] md:text-[16px] text-white font-black tracking-[0.1em] mb-1 drop-shadow-[0_0_5px_rgba(255,255,255,0.3)] transition-all duration-300">
+            <p className="text-[14px] md:text-[16px] text-white font-black tracking-[0.1em] mb-1 drop-shadow-[0_0_5px_rgba(255,255,255,0.4)] transition-all duration-300">
               {currentProject ? currentProject.name : '北京轨道交通13号线扩能提升工程小辛庄停车场'}
             </p>
             <div className="flex items-center justify-center space-x-2">
@@ -162,15 +169,15 @@ const CentralView: React.FC<CentralViewProps> = ({ onEnterSystem, currentProject
         </div>
       </div>
 
-      {/* Interactive Markers */}
+      {/* Interactive Markers - Adjusted colors for lighter theme */}
       {markers.map((marker, i) => {
         // Determine color based on type
         const isRainGauge = marker.type === 'rain';
         // Base color classes
         const colorClass = isRainGauge ? 'bg-blue-500 text-blue-500' : 'bg-cyan-400 text-cyan-400';
         const borderColor = isRainGauge ? 'border-blue-400' : 'border-cyan-400';
-        const bgColor = isRainGauge ? 'bg-blue-900/80' : 'bg-cyan-900/80';
-        const valColor = isRainGauge ? 'text-blue-300' : 'text-cyan-300';
+        const bgColor = isRainGauge ? 'bg-[#1e3a8a]/90' : 'bg-[#164e63]/90';
+        const valColor = isRainGauge ? 'text-blue-200' : 'text-cyan-200';
 
         return (
           <div key={i} className="absolute z-30 transform -translate-x-1/2 -translate-y-1/2" style={{ top: marker.top, left: marker.left }}>
@@ -187,12 +194,12 @@ const CentralView: React.FC<CentralViewProps> = ({ onEnterSystem, currentProject
                  {/* Ripple Effect */}
                  <div className={`absolute inset-0 rounded-full border border-current animate-ping opacity-75 ${isRainGauge ? 'text-blue-500' : 'text-cyan-400'}`}></div>
                  {/* Connecting Line to Label */}
-                 <div className={`absolute left-1/2 bottom-full w-[1px] h-6 bg-current opacity-50 ${activeHoverMarker === i ? 'h-10' : 'h-4'} transition-all duration-300`}></div>
+                 <div className={`absolute left-1/2 bottom-full w-[1px] h-6 bg-current opacity-60 ${activeHoverMarker === i ? 'h-10' : 'h-4'} transition-all duration-300`}></div>
               </div>
 
               {/* Label Card */}
               <div className={`absolute bottom-full mb-4 transition-all duration-300 ${activeHoverMarker === i ? 'mb-10 scale-110 z-50' : 'mb-4 scale-100'}`}>
-                 <div className={`px-3 py-1.5 bg-[#0a1a3a]/90 backdrop-blur-md border border-white/20 rounded-sm shadow-xl flex flex-col items-center
+                 <div className={`px-3 py-1.5 bg-[#0f172a]/90 backdrop-blur-md border border-white/30 rounded-sm shadow-xl flex flex-col items-center
                    ${activeHoverMarker === i ? `${borderColor} ${bgColor}` : ''}`}>
                     <span className="text-[10px] font-black text-white whitespace-nowrap">{marker.label}</span>
                     {activeHoverMarker === i && (
@@ -208,15 +215,15 @@ const CentralView: React.FC<CentralViewProps> = ({ onEnterSystem, currentProject
       })}
 
       {/* Bottom Status Bar Legend */}
-      <div className="absolute bottom-4 left-6 z-20 flex space-x-6 px-6 py-2 bg-[#020d24]/90 backdrop-blur border border-white/10 rounded-full shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+      <div className="absolute bottom-4 left-6 z-20 flex space-x-6 px-6 py-2 bg-[#0f172a]/90 backdrop-blur border border-white/20 rounded-full shadow-[0_0_20px_rgba(0,0,0,0.5)]">
         {[
           { label: '液位监测', val: 'LEVEL_MON', color: 'text-cyan-400', bg: 'bg-cyan-400' },
           { label: '雨量筒', val: 'RAIN_GAUGE', color: 'text-blue-400', bg: 'bg-blue-400' },
         ].map((item, i) => (
           <div key={i} className="flex items-center space-x-2 group cursor-default">
             <div className={`w-2 h-2 rounded-full ${item.bg} shadow-[0_0_5px_currentColor] animate-pulse`}></div>
-            <span className="text-[9px] text-white/80 font-bold tracking-wider">{item.label}</span>
-            <span className={`text-[8px] font-orbitron opacity-50 ${item.color}`}>{item.val}</span>
+            <span className="text-[9px] text-white/90 font-bold tracking-wider">{item.label}</span>
+            <span className={`text-[8px] font-orbitron opacity-70 ${item.color}`}>{item.val}</span>
           </div>
         ))}
       </div>

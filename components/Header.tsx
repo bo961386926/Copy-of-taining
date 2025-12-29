@@ -44,7 +44,8 @@ const Header: React.FC<HeaderProps> = ({ projects = [], currentProject, onProjec
   };
 
   return (
-    <header className="h-12 w-full flex items-center justify-between px-6 bg-[#020d24]/80 border-b border-cyan-400/30 backdrop-blur-xl z-50 relative">
+    // Lightened background from #020d24/80 to #0f172a/90 (Slate-900)
+    <header className="h-12 w-full flex items-center justify-between px-6 bg-[#0f172a]/90 border-b border-cyan-400/40 backdrop-blur-xl z-50 relative">
       {/* Left Side: Brand & Project Switcher */}
       <div className="flex items-center space-x-4 h-full relative z-50">
         {/* Brand Logo */}
@@ -64,8 +65,8 @@ const Header: React.FC<HeaderProps> = ({ projects = [], currentProject, onProjec
              className={`
                flex items-center space-x-2 px-3 py-1.5 rounded-sm border transition-all duration-300
                ${isProjectDropdownOpen 
-                 ? 'bg-cyan-900/40 border-cyan-400/50 text-white' 
-                 : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-cyan-400/30 hover:text-cyan-100'}
+                 ? 'bg-[#1e293b] border-cyan-400/70 text-white' 
+                 : 'bg-white/10 border-white/20 text-white/90 hover:bg-white/20 hover:border-cyan-400/50 hover:text-cyan-100'}
              `}
            >
               <MapPin size={14} className="text-cyan-400 shrink-0" />
@@ -77,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({ projects = [], currentProject, onProjec
 
            {/* Dropdown Menu */}
            {isProjectDropdownOpen && (
-             <div className="absolute top-full left-0 mt-2 w-[320px] bg-[#020d24]/95 border border-cyan-400/30 rounded-sm shadow-[0_10px_40px_rgba(0,0,0,0.8)] overflow-hidden backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200">
+             <div className="absolute top-full left-0 mt-2 w-[320px] bg-[#0f172a]/95 border border-cyan-400/40 rounded-sm shadow-[0_10px_40px_rgba(0,0,0,0.8)] overflow-hidden backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200">
                 <div className="p-2 border-b border-white/10 bg-cyan-900/20 flex justify-between items-center">
                    <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest">切换项目 / Switch Project</p>
                 </div>
@@ -113,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({ projects = [], currentProject, onProjec
       {/* Central Title - Static Display Only */}
       <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none">
         <div 
-          className="bg-gradient-to-b from-blue-700/20 to-blue-900/40 px-12 py-1 border-x border-b border-cyan-400/40 rounded-b-2xl shadow-[0_5px_20px_rgba(0,229,255,0.2)] flex items-center space-x-2"
+          className="bg-gradient-to-b from-[#1e3a8a]/30 to-[#172554]/50 px-12 py-1 border-x border-b border-cyan-400/50 rounded-b-2xl shadow-[0_5px_20px_rgba(0,229,255,0.2)] flex items-center space-x-2"
         >
            <span className="text-lg font-black tracking-[0.4em] text-white text-glow-white uppercase italic whitespace-nowrap">
              建筑排水智慧管理与运维平台

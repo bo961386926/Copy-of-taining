@@ -41,7 +41,7 @@ const monitoringPhotos = [
     location: 'TN-P001 天沟北段', 
     time: '22:35:10', 
     date: '2025-12-26',
-    gradient: 'from-[#0f172a] via-[#1e293b] to-[#0f172a]', // Dark slate
+    gradient: 'from-[#1e293b] via-[#334155] to-[#1e293b]', // Lighter slate
     iconColor: 'text-cyan-400'
   },
   { 
@@ -49,7 +49,7 @@ const monitoringPhotos = [
     location: 'TN-P004 溢流口监测', 
     time: '22:36:22', 
     date: '2025-12-26',
-    gradient: 'from-[#022c22] via-[#14532d] to-[#022c22]', // Dark green/moss
+    gradient: 'from-[#064e3b] via-[#065f46] to-[#064e3b]', // Emerald green
     iconColor: 'text-emerald-400'
   },
   { 
@@ -57,7 +57,7 @@ const monitoringPhotos = [
     location: 'TN-P007 汇流总管', 
     time: '22:34:05', 
     date: '2025-12-26',
-    gradient: 'from-[#1e1b4b] via-[#312e81] to-[#1e1b4b]', // Indigo
+    gradient: 'from-[#312e81] via-[#4338ca] to-[#312e81]', // Indigo
     iconColor: 'text-indigo-400'
   },
   { 
@@ -65,7 +65,7 @@ const monitoringPhotos = [
     location: '中央调蓄池入口', 
     time: '22:38:15', 
     date: '2025-12-26',
-    gradient: 'from-[#4a044e] via-[#701a75] to-[#4a044e]', // Dark fuchsia
+    gradient: 'from-[#701a75] via-[#86198f] to-[#701a75]', // Fuchsia
     iconColor: 'text-fuchsia-400'
   },
 ];
@@ -163,14 +163,14 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
   // Helper to Render Video Player (Used in Sidebar and Fullscreen)
   const renderVideoPlayer = (isFull: boolean = false) => (
       <div 
-        className={`relative w-full h-full bg-black overflow-hidden group select-none ${isFull ? '' : 'rounded-sm border border-white/10'}`}
+        className={`relative w-full h-full bg-[#050505] overflow-hidden group select-none ${isFull ? '' : 'rounded-sm border border-white/10'}`}
         onClick={() => !isFull && setIsVideoPlaying(!isVideoPlaying)} // Only toggle play on click if NOT fullscreen (fullscreen has specific button)
       >
         {/* Mock Video Content Background */}
-        <div className="absolute inset-0 bg-[#050505]">
+        <div className="absolute inset-0 bg-[#0f172a]">
            {/* Grid Pattern */}
            <div className="absolute inset-0 opacity-20" 
-                style={{ backgroundImage: 'linear-gradient(#111 1px, transparent 1px), linear-gradient(90deg, #111 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
+                style={{ backgroundImage: 'linear-gradient(#222 1px, transparent 1px), linear-gradient(90deg, #222 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
            </div>
            
            {/* Static Element (Crosshair) */}
@@ -328,7 +328,8 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
   );
 
   return (
-    <div className="flex w-full h-full p-2 space-x-2 bg-[#010c1e] z-40 relative animate-in fade-in duration-300">
+    // Lightened background from #010c1e to #0f172a (Slate-900)
+    <div className="flex w-full h-full p-2 space-x-2 bg-[#0f172a] z-40 relative animate-in fade-in duration-300">
       
       {/* CSS for Rain Animation */}
       <style>{`
@@ -351,7 +352,8 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
       `}</style>
 
       {/* LEFT SIDEBAR - Location List */}
-      <div className="w-[240px] flex flex-col bg-blue-900/10 border border-blue-400/20 rounded-sm transition-all duration-300 overflow-hidden">
+      {/* Lightened bg from blue-900/10 to #1e293b/50 */}
+      <div className="w-[240px] flex flex-col bg-[#1e293b]/50 border border-blue-400/30 rounded-sm transition-all duration-300 overflow-hidden">
         {/* Title */}
         <div className="h-10 flex items-center px-4 border-b border-blue-400/20 bg-gradient-to-r from-blue-600/20 to-transparent">
           <div className="w-1 h-3 bg-cyan-400 mr-2 shadow-[0_0_8px_#00e5ff]"></div>
@@ -364,7 +366,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
             <input 
               type="text" 
               placeholder="搜索点位编号" 
-              className="w-full bg-[#0a1a3a] border border-blue-400/30 rounded-sm py-1.5 pl-3 pr-8 text-xs text-white focus:border-cyan-400 outline-none transition-colors"
+              className="w-full bg-[#0f172a] border border-blue-400/30 rounded-sm py-1.5 pl-3 pr-8 text-xs text-white focus:border-cyan-400 outline-none transition-colors"
             />
             <Search size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-cyan-400" />
           </div>
@@ -381,7 +383,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
                 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
                 ${activeLocation === idx 
                   ? 'bg-gradient-to-r from-cyan-900/60 to-blue-900/40 border-l-2 border-cyan-400 text-white shadow-[0_0_15px_rgba(34,211,238,0.3)] scale-105 z-10' 
-                  : 'text-white/60 border-l-2 border-transparent hover:border-cyan-400/50 hover:text-white hover:bg-white/5 hover:scale-110 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:z-20'
+                  : 'text-white/70 border-l-2 border-transparent hover:border-cyan-400/50 hover:text-white hover:bg-white/10 hover:scale-110 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:z-20'
                 }
               `}
             >
@@ -395,7 +397,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
               {activeLocation === idx ? (
                 <div className="relative z-10 w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#00e5ff] animate-ping"></div>
               ) : (
-                <div className="w-1.5 h-1.5 rounded-full bg-white/10 group-hover:bg-cyan-400/50 group-hover:shadow-[0_0_5px_#00e5ff] transition-all relative z-10"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-white/20 group-hover:bg-cyan-400/50 group-hover:shadow-[0_0_5px_#00e5ff] transition-all relative z-10"></div>
               )}
             </div>
           ))}
@@ -403,7 +405,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
       </div>
 
       {/* CENTER VIEW - System Visualization */}
-      <div className="flex-1 flex flex-col relative bg-gradient-to-b from-[#020d24] to-[#051630] border border-blue-400/20 rounded-sm overflow-hidden">
+      <div className="flex-1 flex flex-col relative bg-gradient-to-b from-[#0f172a] to-[#172554] border border-blue-400/30 rounded-sm overflow-hidden">
         
         {/* TOP STATS BAR (HUD Style) */}
         <div className="absolute top-4 left-0 right-0 z-30 flex justify-center pointer-events-none">
@@ -416,7 +418,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
                   flex items-center space-x-2 px-4 py-3 rounded-full border transition-all duration-300 group
                   ${isRaining 
                     ? 'bg-cyan-500/20 border-cyan-400 shadow-[0_0_20px_rgba(0,229,255,0.4)]' 
-                    : 'bg-[#020d24]/80 border-white/10 hover:border-cyan-400/50'}
+                    : 'bg-[#0f172a]/80 border-white/10 hover:border-cyan-400/50'}
                 `}
               >
                 {isRaining ? (
@@ -432,7 +434,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
               {/* Data Stats */}
               <div className="
                 flex items-center space-x-10
-                bg-[#020d24]/80 backdrop-blur-md
+                bg-[#0f172a]/80 backdrop-blur-md
                 border border-cyan-400/30
                 px-10 py-3 rounded-full
                 shadow-[0_0_30px_rgba(0,229,255,0.15)]
@@ -459,12 +461,12 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
 
                         {/* Text Info */}
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-white/50 uppercase tracking-wider font-bold mb-0.5">{stat.label}</span>
+                          <span className="text-[10px] text-white/60 uppercase tracking-wider font-bold mb-0.5">{stat.label}</span>
                           <div className="flex items-baseline space-x-1">
                               <span className={`text-2xl font-orbitron font-black leading-none ${stat.valColor} drop-shadow-[0_0_5px_rgba(0,229,255,0.3)]`}>
                                   {stat.val}
                               </span>
-                              <span className="text-[10px] text-white/40 font-mono">{stat.unit}</span>
+                              <span className="text-[10px] text-white/50 font-mono">{stat.unit}</span>
                           </div>
                         </div>
 
@@ -576,19 +578,19 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
               {/* Roof Outlets (Rainwater Hoppers) */}
               <g transform="translate(150, 150)">
                  <path d="M0,0 L10,20 L-10,20 Z" fill="#00e5ff" className="opacity-90 transition-all" />
-                 <ellipse cx="0" cy="0" rx="15" ry="5" fill="#010c1e" stroke="#00e5ff" strokeWidth="1" />
+                 <ellipse cx="0" cy="0" rx="15" ry="5" fill="#0f172a" stroke="#00e5ff" strokeWidth="1" />
                  {/* Swirl only spins when raining */}
                  <path d="M-5,0 Q0,5 5,0" fill="none" stroke="#fff" strokeWidth="1" opacity={isRaining ? 0.5 : 0} className={isRaining ? "animate-spin origin-center" : ""} />
               </g>
 
               <g transform="translate(300, 180)">
                  <path d="M0,0 L10,20 L-10,20 Z" fill="#00e5ff" className="opacity-90" />
-                 <ellipse cx="0" cy="0" rx="15" ry="5" fill="#010c1e" stroke="#00e5ff" strokeWidth="1" />
+                 <ellipse cx="0" cy="0" rx="15" ry="5" fill="#0f172a" stroke="#00e5ff" strokeWidth="1" />
               </g>
 
               <g transform="translate(450, 160)">
                  <path d="M0,0 L10,20 L-10,20 Z" fill="#00e5ff" className="opacity-90" />
-                 <ellipse cx="0" cy="0" rx="15" ry="5" fill="#010c1e" stroke="#00e5ff" strokeWidth="1" />
+                 <ellipse cx="0" cy="0" rx="15" ry="5" fill="#0f172a" stroke="#00e5ff" strokeWidth="1" />
               </g>
 
               {/* Tank */}
@@ -613,28 +615,28 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
               </g>
            </svg>
 
-           {/* Data Tags Overlays */}
+           {/* Data Tags Overlays - Backgrounds Lightened */}
            
            {/* Gutter Level */}
-           <div className={`absolute top-[20%] right-[10%] bg-[#020d24]/80 border border-blue-500/30 p-2 rounded-sm shadow-[0_0_10px_rgba(0,229,255,0.2)] transition-all duration-500 ${isRaining ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-2 grayscale'}`}>
+           <div className={`absolute top-[20%] right-[10%] bg-[#0f172a]/90 border border-blue-500/30 p-2 rounded-sm shadow-[0_0_10px_rgba(0,229,255,0.2)] transition-all duration-500 ${isRaining ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-2 grayscale'}`}>
               <div className="text-[10px] text-white/70 mb-0.5">天沟液位</div>
               <div className="text-lg font-orbitron font-bold text-cyan-400">{activeData.gutterLevel} <span className="text-[10px]">cm</span></div>
            </div>
 
            {/* Pipe Negative Pressure */}
-           <div className={`absolute top-[40%] left-[10%] bg-[#020d24]/80 border border-blue-500/30 p-2 rounded-sm shadow-[0_0_10px_rgba(0,229,255,0.2)] transition-all duration-500 delay-100 ${isRaining ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-2 grayscale'}`}>
+           <div className={`absolute top-[40%] left-[10%] bg-[#0f172a]/90 border border-blue-500/30 p-2 rounded-sm shadow-[0_0_10px_rgba(0,229,255,0.2)] transition-all duration-500 delay-100 ${isRaining ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-2 grayscale'}`}>
               <div className="text-[10px] text-white/70 mb-0.5">管道负压</div>
               <div className="text-lg font-orbitron font-bold text-white">{activeData.negPressure} <span className="text-[10px] text-yellow-500 bg-yellow-900/30 px-1 rounded">mbar</span></div>
            </div>
 
            {/* Outlet Flow */}
-           <div className={`absolute top-[55%] left-[15%] bg-[#020d24]/80 border border-blue-500/30 p-2 rounded-sm shadow-[0_0_10px_rgba(0,229,255,0.2)] transition-all duration-500 delay-200 ${isRaining ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-2 grayscale'}`}>
+           <div className={`absolute top-[55%] left-[15%] bg-[#0f172a]/90 border border-blue-500/30 p-2 rounded-sm shadow-[0_0_10px_rgba(0,229,255,0.2)] transition-all duration-500 delay-200 ${isRaining ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-2 grayscale'}`}>
               <div className="text-[10px] text-white/70 mb-0.5">出水瞬时流量</div>
               <div className="text-lg font-orbitron font-bold text-white">{activeData.flow} <span className="text-[10px] text-blue-400 bg-blue-900/30 px-1 rounded">m³/h</span></div>
            </div>
 
            {/* Residual Pressure */}
-           <div className={`absolute top-[70%] left-[12%] bg-[#020d24]/80 border border-blue-500/30 p-2 rounded-sm shadow-[0_0_10px_rgba(0,229,255,0.2)] transition-all duration-500 delay-300 ${isRaining ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-2 grayscale'}`}>
+           <div className={`absolute top-[70%] left-[12%] bg-[#0f172a]/90 border border-blue-500/30 p-2 rounded-sm shadow-[0_0_10px_rgba(0,229,255,0.2)] transition-all duration-500 delay-300 ${isRaining ? 'opacity-100 translate-y-0' : 'opacity-40 translate-y-2 grayscale'}`}>
               <div className="text-[10px] text-white/70 mb-0.5">出口余压</div>
               <div className="text-lg font-orbitron font-bold text-white">{activeData.residual} <span className="text-[10px] text-yellow-500 bg-yellow-900/30 px-1 rounded">mbar</span></div>
            </div>
@@ -648,7 +650,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
         {/* Back Button Overlay */}
         <button 
           onClick={onBack}
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-[#020d24] border-t border-x border-cyan-500/50 rounded-t-lg px-6 py-1 text-xs text-cyan-400 hover:text-white hover:bg-cyan-900/50 transition-colors z-50 flex items-center space-x-2"
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-[#0f172a] border-t border-x border-cyan-500/50 rounded-t-lg px-6 py-1 text-xs text-cyan-400 hover:text-white hover:bg-cyan-900/50 transition-colors z-50 flex items-center space-x-2"
         >
           <ChevronLeft size={12} />
           <span>返回系统平台</span>
@@ -659,7 +661,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
       {/* RIGHT SIDEBAR - Analysis */}
       <div className="w-[300px] flex flex-col space-y-2">
         {/* REPLACED WEATHER WITH EXPANDED MONITORING CHART */}
-        <div className="bg-blue-900/10 border border-blue-400/20 rounded-sm p-2 flex flex-col h-[240px]">
+        <div className="bg-[#1e293b]/50 border border-blue-400/30 rounded-sm p-2 flex flex-col h-[240px]">
            <div className="text-xs font-bold text-white italic border-l-2 border-cyan-400 pl-2 mb-2">监测数据趋势 (24h)</div>
            <div className="flex-1 relative">
              <ResponsiveContainer width="100%" height="100%">
@@ -684,7 +686,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
                    <YAxis yAxisId="right" orientation="right" fontSize={8} tick={{fill: '#22d3ee'}} axisLine={false} tickLine={false} label={{ value: 'cm', angle: 90, position: 'insideRight', fill: '#22d3ee', fontSize: 8, opacity: 0.5, dy: -10 }} />
 
                    <Tooltip 
-                     contentStyle={{backgroundColor: '#020d24', borderColor: '#3b82f6', fontSize: '10px'}} 
+                     contentStyle={{backgroundColor: '#0f172a', borderColor: '#3b82f6', fontSize: '10px'}} 
                      itemStyle={{color: '#fff'}}
                      labelStyle={{color: '#fff', marginBottom: '5px', fontWeight: 'bold'}}
                      formatter={(value: any, name: any) => {
@@ -705,7 +707,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
         </div>
 
         {/* Real-time Video (MOVED UP) - Styled to match request */}
-        <div className="bg-blue-900/10 border border-blue-400/20 rounded-sm p-2 flex flex-col h-[220px]">
+        <div className="bg-[#1e293b]/50 border border-blue-400/30 rounded-sm p-2 flex flex-col h-[220px]">
            <div className="text-xs font-bold text-white italic border-l-2 border-cyan-400 pl-2 mb-2">实时视频</div>
            <div className="flex-1">
               {renderVideoPlayer(false)}
@@ -713,21 +715,21 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
         </div>
 
         {/* Monitoring Photos (MOVED DOWN) */}
-        <div className="bg-blue-900/10 border border-blue-400/20 rounded-sm p-2 flex flex-col flex-1 min-h-[150px]">
+        <div className="bg-[#1e293b]/50 border border-blue-400/30 rounded-sm p-2 flex flex-col flex-1 min-h-[150px]">
            <div className="flex items-center justify-between mb-2">
              <div className="text-xs font-bold text-white italic border-l-2 border-cyan-400 pl-2">监测照片</div>
              <div className="flex space-x-0.5">
                {monitoringPhotos.map((_, idx) => (
                  <div 
                    key={idx} 
-                   className={`w-1 h-1 rounded-full transition-colors ${idx === currentPhotoIndex ? 'bg-cyan-400' : 'bg-white/20'}`}
+                   className={`w-1 h-1 rounded-full transition-colors ${idx === currentPhotoIndex ? 'bg-cyan-400' : 'bg-white/30'}`}
                  />
                ))}
              </div>
            </div>
            
            <div 
-             className="flex-1 relative rounded-sm overflow-hidden group cursor-pointer border border-white/5 hover:border-cyan-400/50 transition-colors"
+             className="flex-1 relative rounded-sm overflow-hidden group cursor-pointer border border-white/10 hover:border-cyan-400/50 transition-colors"
              onClick={() => setEnlargedPhoto(currentPhoto)}
            >
               {/* Image Simulation */}
@@ -765,7 +767,7 @@ const MonitoringSystem: React.FC<MonitoringSystemProps> = ({ onBack }) => {
       {/* Lightbox Modal (Photos) */}
       {enlargedPhoto && (
         <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-300">
-          <div className="relative w-[90%] h-[90%] max-w-5xl bg-[#020d24] border border-cyan-400/30 rounded-sm shadow-[0_0_50px_rgba(0,229,255,0.2)] flex flex-col">
+          <div className="relative w-[90%] h-[90%] max-w-5xl bg-[#0f172a] border border-cyan-400/30 rounded-sm shadow-[0_0_50px_rgba(0,229,255,0.2)] flex flex-col">
             
             {/* Header */}
             <div className="h-12 flex items-center justify-between px-4 border-b border-white/10 bg-gradient-to-r from-cyan-900/20 to-transparent">

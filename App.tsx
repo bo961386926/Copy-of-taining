@@ -31,7 +31,8 @@ const App: React.FC = () => {
   const [currentProject, setCurrentProject] = useState<Project>(projects[0]);
 
   return (
-    <div className="flex flex-col h-screen w-full bg-[#010c1e] text-white overflow-hidden">
+    // Changed bg color to a lighter slate/navy blue gradient
+    <div className="flex flex-col h-screen w-full bg-gradient-to-br from-[#0f172a] via-[#111f38] to-[#0f172a] text-white overflow-hidden">
       {/* Top Header - Controls Project Selection */}
       <Header 
         projects={projects} 
@@ -61,8 +62,8 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {/* Lighter, Subtle Gradient Overlay for Depth without crushing shadows */}
-      <div className="pointer-events-none fixed inset-0 z-50 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(1,12,30,0.3)_100%)]"></div>
+      {/* Updated Overlay: Lighter and acts as ambient light instead of shadow */}
+      <div className="pointer-events-none fixed inset-0 z-50 bg-[radial-gradient(circle_at_center,rgba(0,229,255,0.03)_0%,transparent_100%)]"></div>
     </div>
   );
 };
